@@ -4,7 +4,7 @@
   "manifest_version": 2,
   "description": "See what the third-party web trackers can learn about you",
   "background": {
-    "scripts": ["background.js", "trackers.js", "network_joined.js"]
+    "scripts": ["background.js"]
   },
 
    "content_security_policy": 
