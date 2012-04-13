@@ -1,0 +1,42 @@
+p {
+    font-family : "Calibri", "Arial", serif;
+}
+
+#pb-screen, body {
+    min-width: 800px;
+    min-hight: 250px;
+    overflow: visible;
+}
+#tabs-right {
+    position: relative;
+    padding-right: 6.5em;
+    width: 20em;
+}
+#tabs-right .ui-tabs-nav {
+    position: absolute;
+    right: 0.5em;
+    top: 0.25em;
+    bottom: 0.25em;
+    padding: 0.2em 0.2em 0.2em 0em;
+}
+#tabs-right .ui-tabs-nav li {
+    width: 100%;
+    border-left: none;
+    font-size: 10px;
+    border-bottom-width: 1px !important;
+    border-radius: 0px 4px 4px 0px;
+    -moz-border-radius: 0px 4px 4px 0px;
+    -webkit-border-radius: 0px 4px 4px 0px;
+    overflow: hidden;
+}
+#tabs-right .ui-tabs-nav li.ui-tabs-selected {
+    left: .25px;
+    border-left: 2px solid gray;
+}
+#tabs-right .ui-tabs-nav li a {
+    width: 100%;
+}
+#tabs-right > div {
+    height: 250px;
+    //min-width: 700px;
+}

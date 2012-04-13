@@ -1,12 +1,46 @@
 <html>
-
 <head>
     <title>Privacy Bucket</title>
+
+    <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.6.1/jquery.min.js"></script>
+    <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.8.1/jquery-ui.min.js"></script>
+    <link type="text/css" href="https://ajax.googleapis.com/ajax/libs/jqueryui/1.7.2/themes/blitzer/ui.all.css" rel="stylesheet">
+    <script type="text/javascript" src="popup.js"></script>
+    <link type="text/css" href="style.css" rel="stylesheet">
 </head>
-
 <body>
+  <table class='pb-screen'>
+    <tr valign='middle'>
+      <td align='center' colspan=2>
+      <p>Privacy Bucket</p>
+      </td>
+    </tr>
+    <tr valign='middle'>
+    <td valign='middle' align='center'>
+      <img id='bucket-img' width="50%">
+    </td>
+    <td valign='middle'>
+<div id="tabs-right" class="tabs ui-tabs ui-widget ui-widget-content ui-corner-all">
+	<ul class="ui-tabs-nav ui-helper-reset ui-helper-clearfix ui-widget-header ui-corner-all">
+    <li class="ui-state-default ui-corner-top ui-tabs-selected ui-state-active"><a href="#tabs-right-1" name="tabs-right">All</a></li>
+    <li class="ui-state-default ui-corner-top ui-tabs-selected ui-state-active"><a href="#tabs-right-2" name="tabs-right">DoubleClick</a></li>
+    <li class="ui-state-default ui-corner-top"><a href="#tabs-right-3">AudienceIntelligence</a></li>
+	</ul>
+	<div id="tabs-right-1" class="ui-tabs-panel ui-widget-content ui-corner-bottom">
+    <p>All</p>
+	</div>
+  <div id="tabs-right-2" class="ui-tabs-panel ui-widget-content ui-corner-bottom">
+    <p>DoubleClick data</p>
+	</div>
+  <div id="tabs-right-3" class="ui-tabs-panel ui-widget-content ui-corner-bottom ui-tabs-hide">
+    <p>AudienceIntelligence data</p>
+	</div>
+</div>
+</td>
+</tr>
+</table>
+
+
 </body>
-
-<script src="popup.js"></script>
-
 </html>
+
