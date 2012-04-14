@@ -1,54 +1,6 @@
 $(function() {
-    $('div.tabs').tabs();
-    //var imgURL = chrome.extension.getURL('images/bucket.jpg');
-    //$('#tabs-right').css( { "background-image" : imgURL });
-
-	//var fontURL = chrome.extension.getURL('fonts/REDCIRCL.ttf');
-	//var resource = 'url ( ' + fontURL + ')';
-	//$('.title').css('font-family', 'titleFont');
-	//$('.title').css('font-size', 36);
-
-	addTab( { 
-    	advertiser : 'All',
-    	network_id : -1, 
-    	text : 'All data',
-    	age : '25-35',
-    	income : '20-40K',
-    	gender : 'male',
-    	education : 'college'
-    } );
-
-  	addTab( { 
-    	advertiser : 'DoubleClick',
-    	network_id : 37, 
-    	text : 'DoubleClick data',
-    	age : '25-35',
-    	income : '20-40K',
-    	gender : 'female',
-    	education : 'college'
-    } );
-
-	addTab( { 
-    	advertiser : 'Acxiom',
-    	network_id : 3, 
-    	text : 'Acxiom data',
-    	age : '18-25',
-    	income : '20-40K',
-    	gender : 'female',
-    	education : 'college'
-    } );
-
-    addTab( { 
-    	advertiser : 'AudienceScience',
-    	network_id : 16, 
-    	text : '',
-    	age : '18-25',
-    	income : '20-40K',
-    	gender : 'male',
-    	education : 'college'
-    } );
-
-    processHistory();
+	$('#tracker-tabs').buttonset();
+	$('#tracker-tabs label').removeClass('ui-corner-right ui-corner-left');
 });
 
 tabCounter = 0;
@@ -77,30 +29,3 @@ function addTab(content){
 	console.info(li);
 	//$('#tabs-right ul').append(li);	
 }
-
-function processHistory(){
-	var histories = [];
-	var visits = [];
-
-	chrome.history.search({text:'', maxResults:0}, function(historyItems) {
-	    var historiesProcessed = 0;
-	    for (var i = 0; i < historyItems.length; i++) {
-	        histories.push(historyItems[i]);
-	        chrome.history.getVisits({url: historyItems[i].url}, function(visitItems) {
-	            for (var i = 0; i < visitItems.length; i++) {
-	                visits.push(visitItems[i]);
-	            }
-	            historiesProcessed++;
-	            if (historiesProcessed === historyItems.length) {
-	                console.log(visits.length + ' visits');
-	            }
-	        });
-	    }
-	    console.log(histories.length + ' histories');
-	});
-}
-
-
-// will contain code that examines that local store
-// containing tracker/host page links, computes probabilities,
-// and displays them in popup.html
