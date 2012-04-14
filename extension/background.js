@@ -42,22 +42,55 @@ function updateDemographicServer(userid, req) {
     
 }
 
+function isNumber(n) {
+  return !isNaN(parseFloat(n)) && isFinite(n);
+}
+
+function doProd(A,B) {
+        
+    var C = {};
+    for(var idx in init) {
+        C[idx] = {};
+        var sum = 0;
+        for(var idx2 in init[idx]) {
+            if(!isNumber(A[idx][idx2]) || !isNumber(B[idx][idx2])) {
+                C[idx][idx2] = 0;
+                continue;
+            }
+            
+            var product = A[idx][idx2] * B[idx][idx2];
+            C[idx][idx2] = product;
+            sum += product;
+        }
+        for(var idx2 in init[idx]) {
+            if(sum > 0) {
+                C[idx][idx2] /= sum;
+                C[idx][idx2] = Math.Round(C[idx][idx2]*100);
+            }
+        }
+    }
+    
+    return C;
+}
+
 function updateTrackerGuesses(req) {
     
     var hp_demos = localStorage["demo:" + req.hostpage];
     hp_demos = normalize(JSON.parse(hp_demos));
+    hp_demos.domain = req.hostpage;
     
     for(var tp in req.thirdparties) {
         var curtp = req.thirdparties[tp];
         
         var curGuessBlob = localStorage["guess:" + curtp];
-        //alert(curGuessBlob);
         if(curGuessBlob == undefined) {
             localStorage["guess:" + curtp] = JSON.stringify(hp_demos);
         } else {
             
             var curguess = normalize(JSON.parse(curGuessBlob));
-            localStorage["guess:" + curtp] = JSON.stringify(product(curguess,hp_demos));
+            var prod = doProd(curguess,hp_demos);
+            prod["domain"] = curguess.domain;            
+            localStorage["guess:" + curtp] = JSON.stringify(prod);
         }
     }
 }
