@@ -1,5 +1,5 @@
 $(function() {
-	// var demographics = demographicsStub;
+	var demographics = demographicsStub;
 	
 	var fields = ['age', 'income', 'gender', 'education', 'family', 'ethnicity'];
 	
@@ -147,16 +147,25 @@ $(function() {
 				row.select('td.guess')
 					.text('Best guess: ' + guess.key);
 					
-				var entries = d3.entries(data[d]);
+				var entries = d3.entries(data[d]),
 					bw = 100,
-					lw = 120;
+					lw = 120,
+					maxh = d3.max(entries, function(d) { return length(d.value) });
+					
+				row.select('th')
+					.style('padding-top', (maxh + 5) + 'px');
+				
+				row.select('td.guess')
+					.style('padding-top', (maxh + 5) + 'px');
 					
 				var svg = row.select('td.likelihood-graph').selectAll('svg')
 					.data([1]);
 					
 				var entry = svg.enter().append('svg:svg')
-					.attr('width', 18 * entries.length + lw)
-					.attr('height', bw + lw);
+					.attr('width', 18 * entries.length + lw - 30)
+					.attr('height', maxh + lw)
+				.append('svg:g')
+					.attr('transform', 'translate(0,' + -(bw-maxh) + ')');
 					
 				entry.append('svg:line')
 					.attr('x1', 70)
@@ -165,11 +174,14 @@ $(function() {
 					.attr('y2', bw + 12)
 					.style('stroke', '#999');
 				
-				var container = svg.selectAll('g')
+				var container = svg.selectAll('g.bar')
 					.data(entries);
 					
+				console.log(entries);
+					
 				entry = container.enter().append('svg:g')
-					.attr('transform', function(d, i) { return 'translate(' + (18 * i + 70) + ',12)'});
+					.attr('class', 'bar')
+					.attr('transform', function(d, i) { return 'translate(' + (18 * i + 70) + ',' + (-(bw-maxh) + 12) + ')'});
 				
 				entry.append('svg:rect')
 					.attr('x', 5)
