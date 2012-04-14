@@ -2,9 +2,8 @@ function getPerTrackerDemographics(key){
 	return getPerTrackerDemographicsStub(key);
 }
 
-stub = 
-{ 
-    	'All' : 
+stub = { 
+    	'All data' : 
     	{
 	    	network_id : -1, 
 	    	text : 'All data',
@@ -124,10 +123,10 @@ stub =
 				'Other': 1
 	    	}
 	    },
-	    'Acxiom' : 
+	    'Audience Science' : 
     	{
 	    	network_id : 16, 
-	    	text : 'Acxiom',
+	    	text : 'Audience Science',
 	    	age : {
 	    		'< 18' : 9,
 				'18-24' : 16,
