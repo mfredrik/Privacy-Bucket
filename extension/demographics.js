@@ -1,5 +1,6 @@
 function getPerTrackerDemographics(key){
-	return getPerTrackerDemographicsStub(key);
+	//return getPerTrackerDemographics(key);
+	return tracker2Demographics[key];
 }
 
 stub = { 
@@ -182,12 +183,19 @@ function getAdvertisers(){
 }
 
 function getDemographicsFromLocalStore(url){
-	for(var domain in localStorage){
-		if(domain.startsWith('demo:')){
-			if(domain.substr(6, domain.length-5) == url){
-				var json = JSON.parse(localStorage[domain]);
+	console.log('Processing ' + url);
+	for(var domain in localStorage){		
+		if(domain.substr(0, 5) == 'demo:'){
+			var siteURL = domain.substr(5, domain.length-5);
+			//console.log('considering ' + siteURL);
+
+			if(siteURL == url){
+				var blob = localStorage[domain];
+				var json = JSON.parse(blob);
 				return json;
 			}
+		}else{
+			//console.log('chunk: ' + domain.substr(0, 5));
 		}
 	}
 	return null;
@@ -195,21 +203,25 @@ function getDemographicsFromLocalStore(url){
 
 // resurn a blob that is the combined distribution across the range of URLs
 function processURLs(urls){
+	console.log('in processURLs');
 	for(var index in urls){
-		var url = urls[index];
+		var url = urls[index];		
 		var aggregate = null;
 		var dem = getDemographicsFromLocalStore(url);
+		
 		if (aggregate) {
 			for(index in aggregate){
 				var aggBlob = aggregate[index];
 				var demBlob = dem[index];
-				aggregate[index] = product(aggBlob, demBlob);
+				if($.isPlainObject(aggBlob) ) {
+					aggregate[index] = product(aggBlob, demBlob);
+				}
 			}
 		} else {
 			aggregate = dem;
 		}
 	}
-
+	//console.log('Aggregate demographics: ' + JSON.stringify(aggregate));
 	return aggregate;
 }
 
@@ -228,4 +240,37 @@ function product(A, B){
 		C[index] *= 100;
 	}
 	return C;
+}	
+
+
+var tracker2Demographics;
+
+// will contain code that examines that local store
+// containing tracker/host page links, computes probabilities,
+// and displays them in popup.html
+function processTrackersFromLocalStore(){
+	tracker2Demographics = {};
+	for(var domain in localStorage){
+		//alert('domain: ' + domain);
+		if(domain.substr(0,8) == 'tracker:'){
+			var urls = new Array();
+			var trackerUrl = domain.substr(8, domain.length-7);
+			 json = JSON.parse(localStorage[domain]);
+			 for (var index in json) {
+				for(i = 0; i < json.length ; i++){
+					urls.push(json[index].domain);
+				}
+			}
+			
+			var result = processURLs(urls);
+			if(result){
+				console.log(trackerUrl + ' : ' + JSON.stringify(result));
+				tracker2Demographics[tracker] = result;
+			}else{
+				console.log(trackerUrl + ' : no data');
+			}
+		}
+	}
 }
+
+//processTrackersFromLocalStore();
