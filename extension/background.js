@@ -75,7 +75,7 @@ function updateDemographicServer(userid, req) {
 function seedDbFromHistory() {
     
     // i wonder if there is a way to specify an unlimited number of results...
-    var hist = chrome.history.search({"maxResults": 10000},
+    var hist = chrome.history.search({"maxResults": 10000, "text": ""},
         function (hist_items) {
             
             for(var item in hist_items) {
@@ -89,7 +89,7 @@ function seedDbFromHistory() {
                     
                     insertIntoDb({"hostpage": hostdomain,
                                   "thirdparties": [getNetworkFromDomain(cur_trackers[tracker])]},
-                                 hist_item[item].visit_count);
+                                 hist_items[item].visit_count);
                 }
                 
             }
@@ -155,7 +155,9 @@ chrome.tabs.onUpdated.addListener(
 // receives notifications of observed trackers from the content script
 chrome.extension.onRequest.addListener(function(req, sender, sendresp) {
    
-    sendAjax(req.hostpage);
+    //sendAjax(req.hostpage);
    
     insertIntoDb(req);
 });
+
+seedDbFromHistory();
