@@ -22,10 +22,8 @@ function getAdvertisers(){
 	}
 	result.sort(function(a, b) {
 		return d3.descending(
-			(tracker2Demographics[a].support && tracker2Demographics[a].support.length) ? 
-				tracker2Demographics[a].support : tracker2Demographics[a].support.length, 
-			(tracker2Demographics[b].support && tracker2Demographics[b].support.length) ? 
-				tracker2Demographics[b].support : tracker2Demographics[b].support.length
+			(tracker2Demographics[a].support && tracker2Demographics[a].support.length) || 0,
+			(tracker2Demographics[b].support && tracker2Demographics[b].support.length) || 0
 			);
 	} );
 	//console.log("advertisers " + result);
