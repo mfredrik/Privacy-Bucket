@@ -27,37 +27,6 @@ page.open('http://www.quantcast.com/' + host + '/demographics',
             var ethresults = {};
 			ethresults['domain'] = host
 			
-/*			
-			var components = [
-				{
-					'selector': 'div#panel-AGE * table[class=demographics-composition] * td[class~=index-digit]',
-					'labels': ['<18', '18-24', '25-34', '35-44', '45-54', '55-64', '65+'],
-					'category': 'age'
-				},
-				{
-					'selector':'div#panel-GENDER * table[class=demographics-composition]  * td[class~=index-digit]',
-					'category': 'gender',
-					'labels': ['Male', 'Female']
-				}
-			];
-			
-			console.log('Starting2...');
-			for(var j = 0; j < components.length; j++) {
-				console.log('Processing ' + components[j]['category']);
-				ethresults[components[j]]['category'] = page.evaluate(function () {
-					var ret = {};
-
-					var body = document.body;
-					var list = body.querySelectorAll(components[j]['selector']);
-					for(var i = 0; i < list.length; i++)
-						ret[components[j]['labels'][i]] = parseInt(list[i].innerText);
-					return ret;
-
-				});			
-			};
-*/
-			
-
             // Scrape the age results
             ethresults['age'] = page.evaluate(function () {
 			    var ret = {}
@@ -101,7 +70,7 @@ page.open('http://www.quantcast.com/' + host + '/demographics',
 
 
             // Scrape the income results
-            ethresults['eduation'] = (page.evaluate(function () {
+            ethresults['education'] = (page.evaluate(function () {
                 var body = document.body;
                 var list = body.querySelectorAll('div#panel-EDUCATION * table[class=demographics-composition]  * td[class~=index-digit]');
 				console.log(list);
