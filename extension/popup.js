@@ -5,6 +5,7 @@ $(function() {
 
 	// add current trackers to nav
 	var trackers = getAdvertisers();
+	console.log(trackers);
 	trackers.forEach(function(name, index) {
 		var id = name.replace(/\W/g, '_'),
 			checked = !index ? 'checked="checked"' : '';
