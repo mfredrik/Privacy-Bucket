@@ -87,7 +87,7 @@ function normalize(A){
 		A.education = A.eduation;
 		delete A.eduation;
 	}
-	if(!A.support) A.support = {}};
+	if(!A.support) A.support = new Array();
 	for(index in init){
 		var initBlob = init[index];
 		if(!A[index]) {
