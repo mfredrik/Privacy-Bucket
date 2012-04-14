@@ -44,7 +44,7 @@ $(function() {
 			updateOverview(data);
 			$('#view-tabs').tabs("option", "selected", 0);
 			
-		})
+		}).first().click();
 		// run it for the first tracker (all data)
 		//.first().click();
 		

@@ -172,6 +172,7 @@ function getTrackerFromLocalStore(tracker){
 	if(DEBUG) console.log('getTrackerFromLocalStore ' + tracker);
 	if(tracker2Demographics[tracker] && tracker2Demographics[tracker].support && Array.isArray(tracker2Demographics[tracker].support)){
 		console.log('In cache ' + tracker);
+		console.log(JSON.stringify(tracker2Demographics[tracker]));
 		return tracker2Demographics[tracker];
 	}
 	for(var domain in localStorage){
