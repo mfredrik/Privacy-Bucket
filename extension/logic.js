@@ -31,3 +31,21 @@ function processHistory(){
 // will contain code that examines that local store
 // containing tracker/host page links, computes probabilities,
 // and displays them in popup.html
+function processTrackersFromLocalStore(){
+	for(var domain in localStorage){
+		if(domain.startsWith('tracker:')){
+			var urls = new Array();
+			if(domain.substr(7, domain.length-7) == url){
+				var json = JSON.parse(localStorage[domain]);
+				for (var index in json) {
+					for(i = 0; i < json.count ; i++){
+						urls.push(json[index].domain);
+					}
+				}
+			}
+			processURLs(urls);
+		}
+	}
+}
+
+processTrackersFromLocalStore();

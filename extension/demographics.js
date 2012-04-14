@@ -163,7 +163,7 @@ stub =
 				'Hispanic':	 10,
 				'Other': 1
 	    	}
-	    }
+	}
 };
 
 function getPerTrackerDemographicsStub(key){
@@ -188,4 +188,41 @@ function getDemographicsFromLocalStore(url){
 		}
 	}
 	return null;
+}
+
+// resurn a blob that is the combined distribution across the range of URLs
+function processURLs(urls){
+	for(var index in urls){
+		var url = urls[index];
+		var aggregate = null;
+		var dem = getDemographicsFromLocalStore(url);
+		if (aggregate) {
+			for(index in aggregate){
+				var aggBlob = aggregate[index];
+				var demBlob = dem[index];
+				aggregate[index] = product(aggBlob, demBlob);
+			}
+		} else {
+			aggregate = dem;
+		}
+	}
+
+	return aggregate;
+}
+
+function product(A, B){
+	var C = {};
+	var sum = 0;
+	// product
+	for(var index in A){
+		var product =  A[index] * B[index];
+		C[index] = product;
+		sum += product;
+	}
+	// normalize
+	for(var index in aggregate){
+		C[index] /= sum;
+		C[index] *= 100;
+	}
+	return C;
 }
