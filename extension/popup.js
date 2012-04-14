@@ -2,18 +2,36 @@ $(function() {
 	// var demographics = demographicsStub;
 	
 	var fields = ['age', 'income', 'gender', 'education', 'family', 'ethnicity'];
+	
+	function toId(name) {
+		return name.replace(/\W/g, '_')
+	}
 
 	demographics.processTrackersFromLocalStore();
 	
 	// layout setup
 	$('#view-tabs').tabs();
-
+	
 	// add current trackers to nav
 	var trackers = demographics.getAdvertisers();
 	trackers.forEach(function(name, index) {
-		var id = name.replace(/\W/g, '_'),
+		var id = toId(name),
 			checked = !index ? 'checked="checked"' : '';
-		$('#tracker-tabs').append('<input type="radio" id="' + id + '" name="tracker" ' + checked + '/><label for="' + id +'">' + name + '</label>');
+		$('#tracker-tabs').append('<input type="radio" id="nav' + id + '" name="tracker" ' + checked + '/><label for="nav' + id +'">' + name + '</label>');
+	});
+	
+	// toggle only network id
+	$('#network-toggle').click(function() {
+		var toggle = !$(this).prop('checked'),
+			notNetwork = trackers.filter(function(d) {
+				var data = demographics.getPerTrackerDemographics(d);
+				return !data.network_id;
+			});
+		notNetwork.forEach(function(name) {
+			var id = toId(name);
+			$('label[for="nav' + id + '"]')
+				.toggle(toggle);
+		})
 	});
 	
 	// set up nav functionality
