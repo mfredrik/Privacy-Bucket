@@ -156,12 +156,40 @@ var allUrls = new Array();
 var domainToIdMap = getDomainToId();
 function processTrackersFromLocalStore(){
 	for(var domain in localStorage){
-		//alert('domain: ' + domain);
-		if(domain.substr(0,8) == 'tracker:'){
+		if(domain.substr(0,6) == 'guess:'){
 			var urls = new Array();
-			var trackerUrl = domain.substr(8, domain.length-7);
+			var trackerUrl = domain.substr(6, domain.length-6);
 			var json = JSON.parse(localStorage[domain]);
-			tracker2Demographics[trackerUrl] = {support : json.length};
+			if(tracker2Demographics[trackerUrl] && tracker2Demographics[trackerUrl].support){
+				var support = tracker2Demographics[trackerUrl].support;
+				tracker2Demographics[trackerUrl] = json;
+				tracker2Demographics[trackerUrl].support = support;
+			}else{
+				tracker2Demographics[trackerUrl] = json;
+			}
+		}
+		if(domain.substr(0,8) == 'tracker:'){
+		 	var urls = new Array();
+		 	var trackerUrl = domain.substr(8, domain.length-7);
+		 	var json = JSON.parse(localStorage[domain]);
+
+		 	if(!tracker2Demographics[trackerUrl]){
+		 		tracker2Demographics[trackerUrl] = {};
+		 	}
+			tracker2Demographics[trackerUrl].support = json;
+
+			var result = domainToIdMap[trackerUrl];
+			if(result) {				
+				tracker2Demographics[trackerUrl].network_id = domainToIdMap[trackerUrl];
+				console.log("adding id " + tracker2Demographics[trackerUrl].network_id + " for " + trackerUrl);
+			}else{
+				//console.log("missing " + trackerUrl  + " in network_id map");
+			}
+		}
+	}
+	for(var domain in tracker2Demographics){
+		if(!tracker2Demographics[domain].support || !Array.isArray(tracker2Demographics[domain].support)){
+			console.log('no support for ' + domain + ' ' + tracker2Demographics[domain]);
 		}
 	}
 }
@@ -173,7 +201,7 @@ function getTrackerFromLocalStore(tracker){
 	if(DEBUG) console.log('getTrackerFromLocalStore ' + tracker);
 	if(tracker2Demographics[tracker] && tracker2Demographics[tracker].support && Array.isArray(tracker2Demographics[tracker].support)){
 		console.log('In cache ' + tracker);
-		console.log(JSON.stringify(tracker2Demographics[tracker]));
+		//console.log(JSON.stringify(tracker2Demographics[tracker]));
 		return tracker2Demographics[tracker];
 	}
 	for(var domain in localStorage){
@@ -196,9 +224,7 @@ function getTrackerFromLocalStore(tracker){
 					}else{
 						if(DEBUG) console.log(trackerUrl + ' : no data');
 					}
-					if(domainToIdMap[tracker]) {
-						result.netword_id = domainToIdMap[tracker];
-					}
+
 					return result;
 				}
 			}else{
@@ -217,6 +243,7 @@ function getTrackerFromLocalStore(tracker){
 			if(result){
 				if(DEBUG) console.log('All' + ' : ' + JSON.stringify(result));				
 				result.support = -1;	// allUrls.length;
+				result.network_id = -1;
 				tracker2Demographics['All'] = result;
 			}else{
 				if(DEBUG) console.log('All' + ' : no data');
