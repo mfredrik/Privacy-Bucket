@@ -1,5 +1,6 @@
+addTotals = true;
 function getPerTrackerDemographics(key){
-	return tracker2Demographics[key];
+	return getTrackerFromLocalStore(key);
 }
 
 function getPerTrackerDemographicsStub(key){
@@ -19,14 +20,19 @@ function getAdvertisers(){
 			result.push(o);
 		}
 	}
-	result.sort(function(a,b) {return d3.ascending(a,b);} );
+	result.sort(function(a, b) {
+		return d3.descending(
+			tracker2Demographics[a].support ? tracker2Demographics[a].support : tracker2Demographics[a].support.length, 
+			tracker2Demographics[b].support ? tracker2Demographics[b].support : tracker2Demographics[b].support.length
+			);
+	} );
 	//console.log("advertisers " + result);
-	result.unshift('All');
+	if(addTotals) result.unshift('All');
 	return result;	
 }
 
 function getDemographicsFromLocalStore(url){
-	console.log('Processing ' + url);
+	if(DEBUG) console.log('Processing ' + url);
 	for(var domain in localStorage){		
 		if(domain.substr(0, 5) == 'demo:'){
 			var siteURL = domain.substr(5, domain.length-5);
@@ -104,12 +110,12 @@ function normalize(A){
 
 // resurn a blob that is the combined distribution across the range of URLs
 function processURLs(urls){
-	console.log('in processURLs');
+	if(DEBUG) console.log('in processURLs');
+	var aggregate = null;
 	for(var index in urls){
 		var url = urls[index];		
-		var aggregate = null;
 		var dem = normalize(getDemographicsFromLocalStore(url));
-		console.log('normalized ' + JSON.stringify(dem));
+		//console.log('normalized ' + JSON.stringify(dem));
 		
 		if (aggregate) {
 			for(index in aggregate){
@@ -124,7 +130,7 @@ function processURLs(urls){
 		}
 		aggregate.support.push(url);
 	}
-	//console.log('Aggregate demographics: ' + JSON.stringify(aggregate));
+	if(DEBUG) console.log('Support: ' + aggregate.support.length);	//JSON.stringify(aggregate)
 	return aggregate;
 }
 
@@ -138,52 +144,96 @@ function product(A, B){
 		sum += product;
 	}
 	// normalize
-	for(var index in aggregate){
+	for(var index in C){
 		C[index] /= sum;
 		C[index] *= 100;
 	}
 	return C;
 }	
 
-
-var tracker2Demographics;
-
-// will contain code that examines that local store
-// containing tracker/host page links, computes probabilities,
-// and displays them in popup.html
+var tracker2Demographics = {};
+var allUrls = new Array();
 function processTrackersFromLocalStore(){
-	tracker2Demographics = {};
-	var allUrls = new Array();
 	for(var domain in localStorage){
 		//alert('domain: ' + domain);
 		if(domain.substr(0,8) == 'tracker:'){
 			var urls = new Array();
 			var trackerUrl = domain.substr(8, domain.length-7);
-			 json = JSON.parse(localStorage[domain]);
-			 for (var index in json) {
-				for(i = 0; i < json.length ; i++){
-					allUrls.push(json[index].domain);
-					urls.push(json[index].domain);
+			var json = JSON.parse(localStorage[domain]);
+			tracker2Demographics[trackerUrl] = {support : json.length};
+		}
+	}
+}
+
+// will contain code that examines that local store
+// containing tracker/host page links, computes probabilities,
+// and displays them in popup.html
+function getTrackerFromLocalStore(tracker){
+	if(DEBUG) console.log('getTrackerFromLocalStore ' + tracker);
+	if(tracker2Demographics[tracker] && tracker2Demographics[tracker].support && Array.isArray(tracker2Demographics[tracker].support)){
+		console.log('In cache ' + tracker);
+		console.log(JSON.stringify(tracker2Demographics[tracker]));
+		return tracker2Demographics[tracker];
+	}
+	for(var domain in localStorage){
+		//alert('domain: ' + domain);
+		if(domain.substr(0,8) == 'tracker:'){
+			var urls = new Array();
+			if(tracker != 'All'){
+				var trackerUrl = domain.substr(8, domain.length-7);
+				if(trackerUrl == tracker){
+					 var json = JSON.parse(localStorage[domain]);
+					 for (var index in json) {
+						for(i = 0; i < json.length ; i++){
+							urls.push(json[index].domain);
+						}
+					}
+					var result = processURLs(urls);	
+					if(result){
+						if(DEBUG) console.log(trackerUrl + ' : ' + JSON.stringify(result));
+						tracker2Demographics[trackerUrl] = result;
+					}else{
+						if(DEBUG) console.log(trackerUrl + ' : no data');
+					}
+					return result;
 				}
-			}
-			
-			var result = processURLs(urls);
-			if(result){
-				console.log(trackerUrl + ' : ' + JSON.stringify(result));
-				tracker2Demographics[trackerUrl] = result;
 			}else{
-				console.log(trackerUrl + ' : no data');
+				var json = JSON.parse(localStorage[domain]);
+				for (var index in json) {
+					for(i = 0; i < json.length ; i++){
+						allUrls.push(json[index].domain);
+					}
+				}				
 			}
 		}
 	}
-	var allResults = processURLs(allUrls);
-	if(allResults){
-		console.log('All : ' + JSON.stringify(allResults));
-		tracker2Demographics['All'] = allResults;
-	}else{
-		console.log('All : ' + ' : no data');
+	if(addTotals){
+		if(tracker == 'All'){
+			var result = processURLs(allUrls);	
+			if(result){
+				if(DEBUG) console.log('All' + ' : ' + JSON.stringify(result));				
+				result.support = -1;	// allUrls.length;
+				tracker2Demographics['All'] = result;
+			}else{
+				if(DEBUG) console.log('All' + ' : no data');
+			}
+			return result;
+		}
 	}
+
+	return null;
 }
+/*
+	if(addTotals){
+		var allResults = processURLs(allUrls);
+		if(allResults){
+			if(DEBUG) console.log('All : ' + JSON.stringify(allResults));
+			tracker2Demographics['All'] = allResults;
+		}else{
+			if(DEBUG) console.log('All : ' + ' : no data');
+		}
+	}
+*/
 
 var demographics = {
 	getPerTrackerDemographics: getPerTrackerDemographics,

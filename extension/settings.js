@@ -1,3 +1,5 @@
+var DEBUG = true;
+
 var displaySettings = {
 	age : 'histogram',
 	gender : 'comparison',

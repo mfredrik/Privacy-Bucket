@@ -44,9 +44,8 @@ $(function() {
 			}
 			// update report tabs
 			updateReports(data);
-		})
-		// run it for the first tracker (all data)
-		.first().click();
+		
+		});//.first().click();
 
 	function updateReports(data) {
 		// update support count
@@ -173,7 +172,6 @@ $(function() {
 				
 				// transition bar
 				svg.selectAll('rect')
-					.each(function(d) { console.log(d.key, d.value); })
 					.transition()
 						.attr('height', function(d) { return length(d.value) })
 						.attr('y', function(d) { return bw - length(d.value) })
