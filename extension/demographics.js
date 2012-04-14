@@ -179,4 +179,14 @@ function processTrackersFromLocalStore(){
 	}
 }
 
-//processTrackersFromLocalStore();
+var demographics = {
+	getPerTrackerDemographics: getPerTrackerDemographics,
+	getAdvertisers: getAdvertisers,
+	processTrackersFromLocalStore: processTrackersFromLocalStore
+};
+
+var demographicsStub = {
+	getPerTrackerDemographics: getPerTrackerDemographicsStub,
+	getAdvertisers: getAdvertisersStub,
+	processTrackersFromLocalStore: function() {}
+};
