@@ -15,9 +15,13 @@ stub = {"gaug.es":{"domain":"github.com","age":{"18-24":9,"25-34":27,"35-44":21,
 function getAdvertisers(){
 	var result = new Array();
 	for(var o in tracker2Demographics) {
-		result.push(o);
+		if(o != 'All'){
+			result.push(o);
+		}
 	}
-	console.log("advertisers " + result);
+	result.sort(function(a,b) {return d3.ascending(a,b);} );
+	//console.log("advertisers " + result);
+	result.unshift('All');
 	return result;	
 }
 
@@ -83,6 +87,7 @@ function normalize(A){
 		A.education = A.eduation;
 		delete A.eduation;
 	}
+	if(!A.support) A.support = 0;
 	for(index in init){
 		var initBlob = init[index];
 		if(!A[index]) {
@@ -117,6 +122,7 @@ function processURLs(urls){
 		} else {
 			aggregate = dem;
 		}
+		aggregate.support++;
 	}
 	//console.log('Aggregate demographics: ' + JSON.stringify(aggregate));
 	return aggregate;
