@@ -1,5 +1,5 @@
 $(function() {
-	//var demographics = demographicsStub;
+	// var demographics = demographicsStub;
 
 	demographics.processTrackersFromLocalStore();
 	
@@ -52,7 +52,7 @@ $(function() {
 
 function updateOverview(data) {
 	// update support count
-	$('#support-count').html(data.support);
+	$('#support-count').html(data.support ? data.support.length : 0);
 	
 	var fields = ['age', 'income', 'gender', 'education', 'family', 'ethnicity'];
 	
