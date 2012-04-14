@@ -28,7 +28,8 @@ function updateDemographicServer(userid, req) {
         if(xhr.readyState == 4) {
             if(xhr.status == 200) {
                 var demos = xhr.responseText;
-                localStorage["demo:" + req.hostpage] = demos;
+                localStorage["demo:" + req.hostpage] = demos;                
+                
                 updateTrackerGuesses(req);
             }
         }
@@ -65,7 +66,7 @@ function doProd(A,B) {
         for(var idx2 in init[idx]) {
             if(sum > 0) {
                 C[idx][idx2] /= sum;
-                C[idx][idx2] = Math.Round(C[idx][idx2]*100);
+                C[idx][idx2] = Math.round(C[idx][idx2]*100);
             }
         }
     }
@@ -75,6 +76,7 @@ function doProd(A,B) {
 
 function updateTrackerGuesses(req) {
     
+    
     var hp_demos = localStorage["demo:" + req.hostpage];
     hp_demos = normalize(JSON.parse(hp_demos));
     hp_demos.domain = req.hostpage;
@@ -82,11 +84,11 @@ function updateTrackerGuesses(req) {
     for(var tp in req.thirdparties) {
         var curtp = req.thirdparties[tp];
         
+        
         var curGuessBlob = localStorage["guess:" + curtp];
-        if(curGuessBlob == undefined) {
+        if(!curGuessBlob) {
             localStorage["guess:" + curtp] = JSON.stringify(hp_demos);
         } else {
-            
             var curguess = normalize(JSON.parse(curGuessBlob));
             var prod = doProd(curguess,hp_demos);
             prod["domain"] = curguess.domain;            
@@ -142,6 +144,7 @@ function seedDbFromHistory(maxResults) {
                             "thirdparties": [
                                 getNetworkFromDomain(cur_trackers[tracker])]},
                                 hist_items[item].visit_count);
+                    cur_trackers[tracker] = getNetworkFromDomain(cur_trackers[tracker]);
                 }
                 
                 updateDemographicServer(0,{hostpage: hostdomain, thirdparties: cur_trackers});                
