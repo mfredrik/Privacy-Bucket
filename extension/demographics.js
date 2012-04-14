@@ -87,7 +87,7 @@ function normalize(A){
 		A.education = A.eduation;
 		delete A.eduation;
 	}
-	if(!A.support) A.support = 0;
+	if(!A.support) A.support = {}};
 	for(index in init){
 		var initBlob = init[index];
 		if(!A[index]) {
@@ -122,7 +122,7 @@ function processURLs(urls){
 		} else {
 			aggregate = dem;
 		}
-		aggregate.support++;
+		aggregate.support.push(url);
 	}
 	//console.log('Aggregate demographics: ' + JSON.stringify(aggregate));
 	return aggregate;
