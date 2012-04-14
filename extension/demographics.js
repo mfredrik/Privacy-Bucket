@@ -35,7 +35,7 @@ stub = {
 	    		'No kids' : 73,
 	    		'Has kids' : 27
 	    	},
-	    	etnithity : {
+	    	ethnicity : {
 		    	'Caucasian' : 63,
 				'African American':	 18,
 				'Asian':	 8,
@@ -75,7 +75,7 @@ stub = {
 	    		'No kids' : 73,
 	    		'Has kids' : 27
 	    	},
-	    	etnithity : {
+	    	ethnicity : {
 		    	'Caucasian' : 63,
 				'African American':	 18,
 				'Asian':	 8,
@@ -115,7 +115,7 @@ stub = {
 	    		'No kids' : 73,
 	    		'Has kids' : 27
 	    	},
-	    	etnithity : {
+	    	ethnicity : {
 		    	'Caucasian' : 63,
 				'African American':	 18,
 				'Asian':	 8,
@@ -155,7 +155,7 @@ stub = {
 	    		'No kids' : 73,
 	    		'Has kids' : 27
 	    	},
-	    	etnithity : {
+	    	ethnicity : {
 		    	'Caucasian' : 63,
 				'African American':	 18,
 				'Asian':	 8,
