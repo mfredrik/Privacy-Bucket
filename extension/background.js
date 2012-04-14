@@ -60,12 +60,12 @@ function updateDemographicServer(userid, req) {
         }
         
         // we're an extension, so this request can go anywhere
-        xhr.open("GET", "https://demo-server/update.php?domain=" +
-                 req.hostpage +
-                 "&" +
-                 getNetworkFromDomain(req.thirdparties[tp]),
-                 true);
-        xhr.send();
+        //xhr.open("GET", "https://demo-server/update.php?domain=" +
+        //         req.hostpage +
+        //         "&" +
+        //         getNetworkFromDomain(req.thirdparties[tp]),
+        //         true);
+        //xhr.send();
     }
 }
 
@@ -113,13 +113,25 @@ function insertIntoDb(req, count) {
     
     for(var tp in req.thirdparties) {
         
-        var key = req.hostpage + ';' + getNetworkFromDomain(req.thirdparties[tp]);
-        var cur = localStorage[key];
+        var trackerBlob = localStorage[req.thirdparties[tp]];
+        if(trackerBlob != undefined) {
+            var curTracker = JSON.parse(trackerBlob);
+        
+            var found = 0;
+            for(var i = 0; i < curTracker.length; i++) {
+                if(curTracker[i].domain == req.hostpage) {
+                    curTracker[i].count++;
+                    found = 1;
+                }                
+            }
             
-        if(cur == undefined)
-            localStorage[key] = (count == undefined) ? 1 : count;
-        else
-            localStorage[key] = (count == undefined) ? parseInt(localStorage[key]) + 1 : count;
+            if(found == 0)
+                curTracker.push({"domain": req.hostpage, "count": 1});
+            localStorage[req.thirdparties[tp]] = JSON.stringify(curTracker);
+        } else {
+            localStorage[req.thirdparties[tp]] = JSON.stringify([{"domain": req.hostpage, "count": 1}]);
+        }
+        
     }
 }
 
@@ -155,7 +167,7 @@ chrome.tabs.onUpdated.addListener(
 // receives notifications of observed trackers from the content script
 chrome.extension.onRequest.addListener(function(req, sender, sendresp) {
    
-    //sendAjax(req.hostpage);
+    //updateDemographicServer(0,req.hostpage);
    
     insertIntoDb(req);
 });
