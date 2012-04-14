@@ -177,3 +177,15 @@ function getAdvertisers(){
 	}
 	return result;	
 }
+
+function getDemographicsFromLocalStore(url){
+	for(var domain in localStorage){
+		if(domain.startsWith('demo:')){
+			if(domain.substr(5, domain.length-5) == url){
+				var json = JSON.parse(localStorage[domain]);
+				return json;
+			}
+		}
+	}
+	return null;
+}
