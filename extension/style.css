@@ -53,11 +53,22 @@ body {
 	height: 400px;
 	overflow: auto;
 }
-#view-tabs {
-	margin-top: 3em;
-}
 #report-pane h2 {
 	margin: 0 0 0 .3em;
+}
+#report-pane h2 span.moreinfo {
+	font-weight: normal;
+	font-size: .8em;
+	margin-left: .5em;
+}
+#tracker-image {
+	display: none;
+	float: right;
+}
+
+/* vis tabs */
+#view-tabs {
+	margin-top: 3em;
 }
 #view-tabs .ui-tabs-nav {
 	border: 0;
