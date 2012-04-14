@@ -1,6 +1,6 @@
 /* minimal reset */
 table { border-collapse: collapse; border-spacing: 0; }
-td { vertical-align: center; }
+td, th { vertical-align: top; }
 
 body {
 	margin: 0;
@@ -125,6 +125,11 @@ table.data-table thead th {
 
 #details-table td.likelihood {
 	display: none;
+}
+
+#details-table td.guess {
+	width: auto;
+	padding-right: 0;
 }
 span.support-count {
 	font-weight: bold;
