@@ -1,3 +1,7 @@
+/* minimal reset */
+table { border-collapse: collapse; border-spacing: 0; }
+td { vertical-align: top; }
+
 body {
 	margin: 0;
     min-width: 800px;
@@ -81,4 +85,19 @@ body {
 #view-tabs .ui-tabs-panel {
 	margin-top: -32px;
 	min-height: 300px;
+}
+
+/* overview history */
+#overview-table th,
+#overview-table td {
+	font-size: .8em;
+	text-align: left;
+	padding: .5em 3em .5em 0;
+}
+#overview-table thead th {
+	font-weight: normal;
+	font-style: italic;
+}
+#support-count {
+	font-weight: bold;
 }
