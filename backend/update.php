@@ -1,33 +1,77 @@
 <?php
 
+$link = mysql_connect('localhost', 'wsj', 'wsj')
+    or die('Could not connect: ' . mysql_error());
+mysql_select_db('demo') or die('Could not select database');
+
 $dom = $_GET["domain"];
 
-  $handle = fopen("/var/www/stats.csv", "r");
-  $found = 0;
-  while(($data = fgetcsv($handle)) !== FALSE) {
-
-   if($dom == $data[0]) {
-    print(json_encode($data));
-    $found = 1;
-    break;
-   }
-  }
-  fclose($handle);
-
-  if($found == 0) {
-
-   $dome = escapeshellarg($dom);
-   exec("/var/www/phantomjs/bin/phantomjs /var/www/phantomscript.js " . $dome . " /var/www//stats.csv");
+$getquery = "SELECT * FROM demo.cache WHERE domain = '" . mysql_real_escape_string($dom) . "';";
+$res = mysql_query($getquery);
+$n = mysql_numrows($res);
+$found = 0;
+if($n > 0) {
+  print(mysql_result($res,0,"demos"));
+  $found = 1;
+}
 
 $handle = fopen("/var/www/stats.csv", "r");
-while(($data = fgetcsv($handle)) !== FALSE) {
+while(($data = fgets($handle)) !== FALSE) {
 
-  if($dom == $data[0]) {
-    print(json_encode($data));
+  $o = json_decode($data);
+  if($o == null) {
+    continue;
+  }
+
+  if($dom == $o->{'domain'}) {
+    print(json_encode($o));
+
+    $dom = mysql_real_escape_string($dom);
+    $data = mysql_real_escape_string($data);
+
+    $insertquery = "INSERT INTO demo.cache VALUES ('$dom','$data');";
+    mysql_query($insertquery);
+
+    $found = 1;
     break;
   }
+
 }
+fclose($handle);
+
+if($found == 0) {
+  
+  $dome = escapeshellarg($dom);
+  $tempf = tempnam('/tmp','stats');
+  exec("/var/www/phantomjs/bin/phantomjs /var/www/phantomscript.js " . $dome . " " . $tempf);
+  
+  $handle = fopen($tempf, "r");
+  while(($data = fgets($handle)) !== FALSE) {
+
+    $o = json_decode($data);
+    if($o == null) {
+      continue;
+    }
+
+    if($dom == $o->{'domain'}) {
+      print(json_encode($o));
+
+      $dom = mysql_real_escape_string($dom);
+      $data = mysql_real_escape_string($data);
+
+      $insertquery = "INSERT INTO demo.cache VALUES ('$dom','$data');";
+      mysql_query($insertquery);
+
+      $found = 1;
+      break;
+    }
+
   }
+
+  fclose($handle);
+  unlink($tempf);
+}
+
 /*
  */
  ?>
