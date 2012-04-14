@@ -2,6 +2,7 @@
 <head>
     <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
     <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.8.1/jquery-ui.min.js"></script>
+	<script type="text/javascript" src="lib/d3/d3.v2.min.js"></script>
     <link type="text/css" href="https://ajax.googleapis.com/ajax/libs/jqueryui/1.7.2/themes/smoothness/ui.all.css" rel="stylesheet">
     <script type="text/javascript" src="settings.js"></script>
     <script type="text/javascript" src="demographics.js"></script>
@@ -25,14 +26,14 @@
 					<li><a href="#tabs-details">Details</a></li>
 				</ul>
 				<div id="tabs-default">
-				Best guesses based on current browser history:
+				Best guesses based on <span id="support-count"></span> observation(s):
 				<table id="overview-table">
-					<tr class="age"><th>Age</th><td class="value"></td></tr>
-					<tr class="income"><th>Income</th><td class="value"></td></tr>
-					<tr class="gender"><th>Gender</th><td class="value"></td></tr>
-					<tr class="education"><th>Education</th><td class="value"></td></tr>
-					<tr class="family"><th>Family</th><td class="value"></td></tr>
-					<tr class="ethinicity"><th>Ethnicity</th><td class="value"></td></tr>
+					<thead>
+						<th></th>
+						<th>Guess</th>
+						<th>Likelihood</th>
+					</thead>
+					<tbody></tbody>
 				</table>
 				</div>
 				<div id="tabs-details">
