@@ -43,6 +43,26 @@ page.open('http://www.quantcast.com/' + host + '/demographics',
                 if(i < ethresults.length-1) fp.write(',');
                 console.log(ethresults[i].replace('%',''));
             }
+			console.log('getting gender');
+            // Scrape the gender results
+            var ethresults = page.evaluate(function () {
+                var body = document.body;
+                var list = body.querySelectorAll('div#panel-GENDER * table[class=demographics-composition]  * td[class~=index-digit]');
+				console.log(list)
+                var ret = [];
+                for(var i = 0; i < list.length; i++)
+                    ret.push(list[i].innerText);
+                return ret;
+            });
+            
+            // write the gender results to the output file
+            for(var i = 0; i < ethresults.length; i++) {
+                if(ethresults[i] == null) continue;
+                
+                fp.write(ethresults[i].replace('%',''));
+                if(i < ethresults.length-1) fp.write(',');
+                console.log(ethresults[i].replace('%',''));
+            }
             
             // signal end of host
             fp.write('\n');
