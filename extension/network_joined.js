@@ -4,7 +4,8 @@ function getDomainToId(){
 	var result = {};
 	for(var o in ad_networks){
 		var pair = ad_networks[o];
-		result[pair.domain] = pair.id;
+		result[pair.name] = pair.id;
+		//console.log(pair.name + ' -> ' + pair.id);
 	}
 
 	return result;

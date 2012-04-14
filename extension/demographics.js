@@ -172,10 +172,19 @@ function processTrackersFromLocalStore(){
 		 	var urls = new Array();
 		 	var trackerUrl = domain.substr(8, domain.length-7);
 		 	var json = JSON.parse(localStorage[domain]);
+
 		 	if(!tracker2Demographics[trackerUrl]){
 		 		tracker2Demographics[trackerUrl] = {};
 		 	}
 			tracker2Demographics[trackerUrl].support = json;
+
+			var result = domainToIdMap[trackerUrl];
+			if(result) {				
+				tracker2Demographics[trackerUrl].network_id = domainToIdMap[trackerUrl];
+				console.log("adding id " + tracker2Demographics[trackerUrl].network_id + " for " + trackerUrl);
+			}else{
+				//console.log("missing " + trackerUrl  + " in network_id map");
+			}
 		}
 	}
 }
@@ -187,7 +196,7 @@ function getTrackerFromLocalStore(tracker){
 	if(DEBUG) console.log('getTrackerFromLocalStore ' + tracker);
 	if(tracker2Demographics[tracker] && tracker2Demographics[tracker].support && Array.isArray(tracker2Demographics[tracker].support)){
 		console.log('In cache ' + tracker);
-		console.log(JSON.stringify(tracker2Demographics[tracker]));
+		//console.log(JSON.stringify(tracker2Demographics[tracker]));
 		return tracker2Demographics[tracker];
 	}
 	for(var domain in localStorage){
@@ -210,9 +219,7 @@ function getTrackerFromLocalStore(tracker){
 					}else{
 						if(DEBUG) console.log(trackerUrl + ' : no data');
 					}
-					if(domainToIdMap[tracker]) {
-						result.network_id = domainToIdMap[tracker];
-					}
+
 					return result;
 				}
 			}else{
@@ -231,6 +238,7 @@ function getTrackerFromLocalStore(tracker){
 			if(result){
 				if(DEBUG) console.log('All' + ' : ' + JSON.stringify(result));				
 				result.support = -1;	// allUrls.length;
+				result.network_id = -1;
 				tracker2Demographics['All'] = result;
 			}else{
 				if(DEBUG) console.log('All' + ' : no data');
