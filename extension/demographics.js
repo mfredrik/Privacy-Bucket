@@ -1,4 +1,4 @@
-addTotals = false;
+addTotals = true;
 function getPerTrackerDemographics(key){
 	return getTrackerFromLocalStore(key);
 }
@@ -21,12 +21,13 @@ function getAdvertisers(){
 		}
 	}
 	result.sort(function(a, b) {
-		return d3.descending(tracker2Demographics[a].support.length, tracker2Demographics[b].support.length);
+		return d3.descending(
+			tracker2Demographics[a].support ? tracker2Demographics[a].support : tracker2Demographics[a].support.length, 
+			tracker2Demographics[b].support ? tracker2Demographics[b].support : tracker2Demographics[b].support.length
+			);
 	} );
 	//console.log("advertisers " + result);
-	if(addTotals){
-		result.unshift('All');
-	}
+	if(addTotals) result.unshift('All');
 	return result;	
 }
 
@@ -150,9 +151,8 @@ function product(A, B){
 	return C;
 }	
 
-
-
 var tracker2Demographics = {};
+var allUrls = new Array();
 function processTrackersFromLocalStore(){
 	for(var domain in localStorage){
 		//alert('domain: ' + domain);
@@ -169,31 +169,54 @@ function processTrackersFromLocalStore(){
 // containing tracker/host page links, computes probabilities,
 // and displays them in popup.html
 function getTrackerFromLocalStore(tracker){
-	console.log('getTrackerFromLocalStore ' + tracker);
-	if(tracker2Demographics[trackerUrl] && tracker2Demographics[trackerUrl].support){
-		return tracker2Demographics[trackerUrl];
+	if(DEBUG) console.log('getTrackerFromLocalStore ' + tracker);
+	if(tracker2Demographics[tracker] && tracker2Demographics[tracker].support){
+		console.log('In cache ' + tracker);
+		return tracker2Demographics[tracker];
 	}
 	for(var domain in localStorage){
 		//alert('domain: ' + domain);
 		if(domain.substr(0,8) == 'tracker:'){
 			var urls = new Array();
-			var trackerUrl = domain.substr(8, domain.length-7);
-			if(trackerUrl == tracker){
-				 json = JSON.parse(localStorage[domain]);
-				 for (var index in json) {
-					for(i = 0; i < json.length ; i++){
-						urls.push(json[index].domain);
+			if(tracker != 'All'){
+				var trackerUrl = domain.substr(8, domain.length-7);
+				if(trackerUrl == tracker){
+					 var json = JSON.parse(localStorage[domain]);
+					 for (var index in json) {
+						for(i = 0; i < json.length ; i++){
+							urls.push(json[index].domain);
+						}
 					}
+					var result = processURLs(urls);	
+					if(result){
+						if(DEBUG) console.log(trackerUrl + ' : ' + JSON.stringify(result));
+						tracker2Demographics[trackerUrl] = result;
+					}else{
+						if(DEBUG) console.log(trackerUrl + ' : no data');
+					}
+					return result;
 				}
-				var result = processURLs(urls);	
-				if(result){
-					if(DEBUG) console.log(trackerUrl + ' : ' + JSON.stringify(result));
-					tracker2Demographics[trackerUrl] = result;
-				}else{
-					if(DEBUG) console.log(trackerUrl + ' : no data');
-				}
-				return result;
+			}else{
+				var json = JSON.parse(localStorage[domain]);
+				for (var index in json) {
+					for(i = 0; i < json.length ; i++){
+						allUrls.push(json[index].domain);
+					}
+				}				
 			}
+		}
+	}
+	if(addTotals){
+		if(tracker == 'All'){
+			var result = processURLs(allUrls);	
+			if(result){
+				if(DEBUG) console.log('All' + ' : ' + JSON.stringify(result));				
+				result.support = -1;	// allUrls.length;
+				tracker2Demographics['All'] = result;
+			}else{
+				if(DEBUG) console.log('All' + ' : no data');
+			}
+			return result;
 		}
 	}
 

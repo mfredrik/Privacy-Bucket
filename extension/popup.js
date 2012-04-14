@@ -46,7 +46,7 @@ $(function() {
 			
 		})
 		// run it for the first tracker (all data)
-		.first().click();
+		//.first().click();
 		
 });
 
