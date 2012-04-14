@@ -1,28 +1,30 @@
 p {
     font-family : "Calibri", "Arial", serif;
+    font-size : 12px;
 }
 
-#pb-screen, body {
+body {
     min-width: 800px;
-    min-hight: 250px;
-    overflow: visible;
+    height: 260px;
+    overflow: hidden;
 }
 #tabs-right {
     position: relative;
     padding-right: 6.5em;
-    width: 20em;
+    height: 100%;
 }
 #tabs-right .ui-tabs-nav {
     position: absolute;
-    right: 0.5em;
-    top: 0.25em;
+    right: 1em;
+    top: 0.5em;
     bottom: 0.25em;
     padding: 0.2em 0.2em 0.2em 0em;
+    height: 90%;
 }
 #tabs-right .ui-tabs-nav li {
     width: 100%;
     border-left: none;
-    font-size: 10px;
+    font-size: 11px;
     border-bottom-width: 1px !important;
     border-radius: 0px 4px 4px 0px;
     -moz-border-radius: 0px 4px 4px 0px;
@@ -37,6 +39,26 @@ p {
     width: 100%;
 }
 #tabs-right > div {
-    height: 250px;
-    //min-width: 700px;
+    height: 100%;
+    width: 400px;
+}
+
+@font-face {  
+    font-family: titleFont ;  
+    src: url( chrome-extension:/fonts/REDCIRCL.ttf ) format("truetype");
+} 
+
+.title { 
+    font-family: titleFont, verdana, helvetica, sans-serif;
+    font-size: 36px;
+    color: red;
+    padding-left: 0.2em;
+    padding-top: 0.2em;
+    padding-bottom: 0em;
+}
+
+.demographic-table {
+    width: 400px;    
+    font-size: 14px;
+    color: darkgray;
 }
