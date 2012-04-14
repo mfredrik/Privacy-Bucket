@@ -37,6 +37,7 @@ body {
 	background: #999;
 	height: 100%;
 	position: absolute;
+    overflow: auto;
 }
 #tracker-tabs label {
 	display: block;

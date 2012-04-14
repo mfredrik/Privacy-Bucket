@@ -241,6 +241,10 @@ var init = {
 		};
 
 function normalize(A){
+	if(A.eduation) {
+		A.education = A.eduation;
+		delete A.eduation;
+	}
 	for(index in init){
 		var initBlob = init[index];
 		if(!A[index]) {
@@ -305,6 +309,7 @@ var tracker2Demographics;
 // and displays them in popup.html
 function processTrackersFromLocalStore(){
 	tracker2Demographics = {};
+	var allUrls = new Array();
 	for(var domain in localStorage){
 		//alert('domain: ' + domain);
 		if(domain.substr(0,8) == 'tracker:'){
@@ -313,6 +318,7 @@ function processTrackersFromLocalStore(){
 			 json = JSON.parse(localStorage[domain]);
 			 for (var index in json) {
 				for(i = 0; i < json.length ; i++){
+					allUrls.push(json[index].domain);
 					urls.push(json[index].domain);
 				}
 			}
@@ -325,6 +331,13 @@ function processTrackersFromLocalStore(){
 				console.log(trackerUrl + ' : no data');
 			}
 		}
+	}
+	var allResults = processURLs(allUrls);
+	if(allResults){
+		console.log('All : ' + JSON.stringify(allResults));
+		tracker2Demographics['All'] = allResults;
+	}else{
+		console.log('All : ' + ' : no data');
 	}
 }
 
