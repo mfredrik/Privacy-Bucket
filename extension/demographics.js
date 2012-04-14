@@ -153,6 +153,7 @@ function product(A, B){
 
 var tracker2Demographics = {};
 var allUrls = new Array();
+var domainToIdMap = getDomainToId();
 function processTrackersFromLocalStore(){
 	for(var domain in localStorage){
 		//alert('domain: ' + domain);
@@ -194,6 +195,9 @@ function getTrackerFromLocalStore(tracker){
 						tracker2Demographics[trackerUrl] = result;
 					}else{
 						if(DEBUG) console.log(trackerUrl + ' : no data');
+					}
+					if(domainToIdMap[tracker]) {
+						result.netword_id = domainToIdMap[tracker];
 					}
 					return result;
 				}

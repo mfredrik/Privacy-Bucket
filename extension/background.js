@@ -29,6 +29,7 @@ function updateDemographicServer(userid, req) {
             if(xhr.status == 200) {
                 var demos = xhr.responseText;
                 localStorage["demo:" + req.hostpage] = demos;
+                updateTrackerGuesses(req);
             }
         }
     }
@@ -39,6 +40,26 @@ function updateDemographicServer(userid, req) {
     xhr.open("GET", demo_server + "update.php?domain=" + req.hostpage, true);
     xhr.send();
     
+}
+
+function updateTrackerGuesses(req) {
+    
+    var hp_demos = localStorage["demo:" + req.hostpage];
+    hp_demos = normalize(JSON.parse(hp_demos));
+    
+    for(var tp in req.thirdparties) {
+        var curtp = req.thirdparties[tp];
+        
+        var curGuessBlob = localStorage["guess:" + curtp];
+        //alert(curGuessBlob);
+        if(curGuessBlob == undefined) {
+            localStorage["guess:" + curtp] = JSON.stringify(hp_demos);
+        } else {
+            
+            var curguess = normalize(JSON.parse(curGuessBlob));
+            localStorage["guess:" + curtp] = JSON.stringify(product(curguess,hp_demos));
+        }
+    }
 }
 
 // quick and dirty url parser
@@ -90,7 +111,8 @@ function seedDbFromHistory(maxResults) {
                                 hist_items[item].visit_count);
                 }
                 
-                updateDemographicServer(0,{hostpage: hostdomain, thirdparties: []});
+                updateDemographicServer(0,{hostpage: hostdomain, thirdparties: cur_trackers});                
+                //updateTrackerGuesses({hostpage: hostdomain, thirdparties: cur_trackers});
             }
         }
     );
@@ -164,7 +186,8 @@ chrome.tabs.onUpdated.addListener(
 chrome.extension.onRequest.addListener(function(req, sender, sendresp) {
     
     if(req.thirdparties){
-        updateDemographicServer(0,req);   
+        updateDemographicServer(0,req);
+        //updateTrackerGuesses(req);
         insertIntoDb(req);
     }
 });
