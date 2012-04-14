@@ -170,7 +170,7 @@ function processTrackersFromLocalStore(){
 // and displays them in popup.html
 function getTrackerFromLocalStore(tracker){
 	if(DEBUG) console.log('getTrackerFromLocalStore ' + tracker);
-	if(tracker2Demographics[tracker] && tracker2Demographics[tracker].support){
+	if(tracker2Demographics[tracker] && tracker2Demographics[tracker].support && Array.isArray(tracker2Demographics[tracker].support)){
 		console.log('In cache ' + tracker);
 		return tracker2Demographics[tracker];
 	}
