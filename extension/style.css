@@ -103,6 +103,17 @@ body {
 	font-weight: normal;
 	font-style: italic;
 }
+#overview-table td.guess {
+	width: 6em;
+}
+#overview-table td.likelihood {
+	text-align: right;
+	padding-right: 0;
+	width: 2.5em;
+}
+#overview-table td.likelihood-graph  svg {
+	margin-top: 3px;
+}
 #support-count {
 	font-weight: bold;
 }

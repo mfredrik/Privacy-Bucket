@@ -52,7 +52,7 @@ $(function() {
 
 function updateOverview(data) {
 	// update support count
-	$('#support-count').html(data.support ? data.support.length : 0);
+	$('span.support-count').html(data.support ? data.support.length : 0);
 	
 	var fields = ['age', 'income', 'gender', 'education', 'family', 'ethnicity'];
 	
@@ -65,7 +65,7 @@ function updateOverview(data) {
 			});
 			// add rows
 			$('#overview-table tbody').append(
-				'<tr class="' + field + '"><th>' + title + '</th><td class="guess"></td><td class="likelihood"><span class="value"></span></td></tr>'
+				'<tr class="' + field + '"><th>' + title + '</th><td class="guess"></td><td class="likelihood"></td><td class="likelihood-graph"></td></tr>'
 			);
 		});
 	}
@@ -103,25 +103,23 @@ function updateOverview(data) {
 			
 		// update likelihood
 		var visCell = row.select('td.likelihood')
-			.style('color', color(guess.value));
-		
-		visCell.select('span.value')
-			.text(guess.value + '%');
+			.style('color', color(guess.value))
+			.text(~~guess.value + '%');
 			
-		var svg = visCell.selectAll('svg')
+		var svg = row.select('td.likelihood-graph').selectAll('svg')
 			.data([d]);
 			
 		svg.enter().append('svg:svg')
 			.attr('height', 12)
 			.attr('width', 100)
 		.append('svg:rect')
-			.attr('x', 10)
+			.attr('x', 5)
 			.style('fill', color(guess.value))
 			.attr('height', 15)
 			.attr('width', 0);
 		
 		// transition bar
-		visCell.selectAll('svg rect')
+		svg.selectAll('rect')
 			.transition()
 				.attr('width', function(d) { return width(guesses[d].value) })
 				.duration(250);
