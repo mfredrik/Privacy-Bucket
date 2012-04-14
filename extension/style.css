@@ -1,6 +1,6 @@
 /* minimal reset */
 table { border-collapse: collapse; border-spacing: 0; }
-td { vertical-align: top; }
+td { vertical-align: center; }
 
 body {
 	margin: 0;
@@ -93,13 +93,13 @@ body {
 }
 
 /* overview history */
-#overview-table th,
-#overview-table td {
+table.data-table th,
+table.data-table td {
 	font-size: .8em;
 	text-align: left;
 	padding: .5em 3em .5em 0;
 }
-#overview-table thead th {
+table.data-table thead th {
 	font-weight: normal;
 	font-style: italic;
 }
@@ -112,8 +112,12 @@ body {
 	width: 2.5em;
 }
 #overview-table td.likelihood-graph  svg {
-	margin-top: 3px;
+	margin-bottom: 1px;
 }
-#support-count {
+
+#details-table td.likelihood {
+	display: none;
+}
+span.support-count {
 	font-weight: bold;
 }

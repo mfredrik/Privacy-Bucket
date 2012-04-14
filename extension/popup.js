@@ -1,5 +1,7 @@
 $(function() {
 	// var demographics = demographicsStub;
+	
+	var fields = ['age', 'income', 'gender', 'education', 'family', 'ethnicity'];
 
 	demographics.processTrackersFromLocalStore();
 	
@@ -41,87 +43,143 @@ $(function() {
 				$('#tracker-image').hide();
 			}
 			// update report tabs
-			updateOverview(data);
-			$('#view-tabs').tabs("option", "selected", 0);
-			
+			updateReports(data);
 		})
 		// run it for the first tracker (all data)
 		.first().click();
+
+	function updateReports(data) {
+		// update support count
+		$('span.support-count').html(data.support ? data.support.length : 0);
+		
+		// create tables (first time)
+		$('table.data-table').each(function() {
+			var $this = $(this);
+			if (!$('tbody tr', $this).length) {
+				fields.forEach(function(field) {
+					// slightly ugly title case conversion
+					var title = field.replace(/\w\S*/g, function(txt){
+						return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase();
+					});
+					// add rows
+					$('tbody', $this).append(
+						'<tr class="' + field + '"><th>' + title + '</th><td class="guess"></td><td class="likelihood"></td><td class="likelihood-graph"></td></tr>'
+					);
+				});
+			}
+		});
+		
+		// scales for overview data
+		var length = d3.scale.linear()
+				.domain([0,100])
+				.range([0, 80]);
+		
+		// transition to current values
+		var guesses = fields.reduce(function(agg, field) {
+			// get the top guess
+			var entries = d3.entries(data[field]);
+			entries.sort(function(a,b) { return d3.descending(a.value, b.value)});
+			// set it
+			agg[field] = entries[0];
+			return agg;
+		}, {});
+			
+		
+		// update overview
+		d3.selectAll('#overview-table tbody tr')
+			.data(fields)
+			.each(function(d) {
+				var row = d3.select(this),
+					guess = guesses[d];
+				
+				// update guess
+				row.select('td.guess')
+					.text(guess.key);
+					
+				// update likelihood
+				var visCell = row.select('td.likelihood')
+					.text(~~guess.value + '%');
+					
+				var svg = row.select('td.likelihood-graph').selectAll('svg')
+					.data([d]);
+					
+				svg.enter().append('svg:svg')
+					.attr('height', 12)
+					.attr('width', 100)
+				.append('svg:rect')
+					.attr('x', 5)
+					.attr('fill', 'steelblue')
+					.attr('height', 15)
+					.attr('width', 0);
+				
+				// transition bar
+				svg.selectAll('rect')
+					.transition()
+						.attr('width', function(d) { return length(guess.value) })
+						.duration(250);
+			});
+			
+		// update details
+		d3.selectAll('#details-table tbody tr')
+			.data(fields)
+			.each(function(d) {
+				var row = d3.select(this),
+					guess = guesses[d];
+				
+				// update guess
+				row.select('td.guess')
+					.text('Best guess: ' + guess.key);
+					
+				var entries = d3.entries(data[d]);
+					bw = 100,
+					lw = 120;
+					
+				var svg = row.select('td.likelihood-graph').selectAll('svg')
+					.data([1]);
+					
+				var entry = svg.enter().append('svg:svg')
+					.attr('width', 18 * entries.length + lw)
+					.attr('height', bw + lw);
+					
+				entry.append('svg:line')
+					.attr('x1', 70)
+					.attr('x2', 18 * entries.length + 72)
+					.attr('y1', bw + 12)
+					.attr('y2', bw + 12)
+					.style('stroke', '#999');
+				
+				var container = svg.selectAll('g')
+					.data(entries);
+					
+				entry = container.enter().append('svg:g')
+					.attr('transform', function(d, i) { return 'translate(' + (18 * i + 70) + ',12)'});
+				
+				entry.append('svg:rect')
+					.attr('x', 5)
+					.attr('y', bw)
+					.attr('fill', 'steelblue')
+					.attr('width', 15)
+					.attr('height', 0);
+					
+				entry.append('svg:text')
+					.attr('y', bw + 7)
+					.attr('x', 15)
+					.attr('text-anchor', 'end')
+					.attr('transform', 'rotate(-60 15,' + (bw + 7) + ')')
+					.text(function(d) { return d.key });
+					
+				var container = svg.selectAll('rect')
+					.data(entries);
+				
+				// transition bar
+				svg.selectAll('rect')
+					.each(function(d) { console.log(d.key, d.value); })
+					.transition()
+						.attr('height', function(d) { return length(d.value) })
+						.attr('y', function(d) { return bw - length(d.value) })
+						.duration(250);
+			});
+	}
+
 		
 });
-
-function updateOverview(data) {
-	// update support count
-	$('span.support-count').html(data.support ? data.support.length : 0);
-	
-	var fields = ['age', 'income', 'gender', 'education', 'family', 'ethnicity'];
-	
-	// create overview table (first time)
-	if (!$('#overview-table tbody tr').length) {
-		fields.forEach(function(field) {
-			// slightly ugly title case conversion
-			var title = field.replace(/\w\S*/g, function(txt){
-				return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase();
-			});
-			// add rows
-			$('#overview-table tbody').append(
-				'<tr class="' + field + '"><th>' + title + '</th><td class="guess"></td><td class="likelihood"></td><td class="likelihood-graph"></td></tr>'
-			);
-		});
-	}
-	
-	// scales for overview data
-	var width = d3.scale.linear()
-			.domain([0,100])
-			.range([0, 80]),
-		color = d3.scale.linear()
-			.domain([0,100])
-			.range(['red', 'blue']);
-		
-	// row
-	var rows = d3.selectAll('#overview-table tbody tr')
-		.data(fields);
-	
-	// transition to current values
-	var guesses = fields.reduce(function(agg, field) {
-		// get the top guess
-		var entries = d3.entries(data[field]);
-		entries.sort(function(a,b) { return d3.descending(a.value, b.value)});
-		// set it
-		agg[field] = entries[0];
-		return agg;
-	}, {});
-	
-	// update to current guess
-	rows.each(function(d) {
-		var row = d3.select(this),
-			guess = guesses[d];
-		
-		// update guess
-		row.select('td.guess')
-			.text(guess.key);
-			
-		// update likelihood
-		var visCell = row.select('td.likelihood')
-			.style('color', color(guess.value))
-			.text(~~guess.value + '%');
-			
-		var svg = row.select('td.likelihood-graph').selectAll('svg')
-			.data([d]);
-			
-		svg.enter().append('svg:svg')
-			.attr('height', 12)
-			.attr('width', 100)
-		.append('svg:rect')
-			.attr('x', 5)
-			.style('fill', color(guess.value))
-			.attr('height', 15)
-			.attr('width', 0);
-		
-		// transition bar
-		svg.selectAll('rect')
-			.transition()
-				.attr('width', function(d) { return width(guesses[d].value) })
-				.duration(250);
-	});
-}
