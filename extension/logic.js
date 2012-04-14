@@ -22,13 +22,11 @@ function processHistory(){
 }
 
 // request processing
-chrome.webRequest.onRequest.addListener( 
-	function(request) 
-	{
-		console.log("outgoing URL: " + request.url);
-	});
-
-
+//chrome.webRequest.onRequest.addListener( 
+//	function(request) 
+//	{
+//		console.log("outgoing URL: " + request.url);
+//	});
 
 // will contain code that examines that local store
 // containing tracker/host page links, computes probabilities,
