@@ -87,6 +87,9 @@ body {
 	margin-top: -32px;
 	min-height: 300px;
 }
+.ui-tabs .ui-tabs-nav li {
+	margin-right: .5em;
+}
 
 /* overview history */
 #overview-table th,

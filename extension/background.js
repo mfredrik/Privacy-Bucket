@@ -18,29 +18,27 @@ Object.prototype.hasOwnProperty = function(property) {
 function updateDemographicServer(userid, req) {
 
     var xhr = new XMLHttpRequest();
-    
-    for(var tp in req.thirdparties) {
+
+    xhr.onreadystatechange = function() {        
         
-        xhr.onreadystatechange = function() {        
-            
-            // if we've already cached these demographics, don't worry about it
-            if(localStorage["demo:" + req.hostpage] != undefined)
-                return;
-            
-            if(xhr.readyState == 4) {
-                if(xhr.status == 200) {
-                    var demos = xhr.responseText;
-                    localStorage["demo:" + req.hostpage] = demos;
-                }
+        // if we've already cached these demographics, don't worry about it
+        if(localStorage["demo:" + req.hostpage] != undefined)
+            return;
+        
+        if(xhr.readyState == 4) {
+            if(xhr.status == 200) {
+                var demos = xhr.responseText;
+                localStorage["demo:" + req.hostpage] = demos;
             }
         }
-        
-        // TODO: map third-party domains to tracker names
-        
-        // we're an extension, so this request can go anywhere
-        xhr.open("GET", demo_server + "update.php?domain=" + req.hostpage, true);
-        xhr.send();
     }
+    
+    // TODO: map third-party domains to tracker names
+    
+    // we're an extension, so this request can go anywhere
+    xhr.open("GET", demo_server + "update.php?domain=" + req.hostpage, true);
+    xhr.send();
+    
 }
 
 // quick and dirty url parser
@@ -87,7 +85,9 @@ function seedDbFromHistory(maxResults) {
                             "thirdparties": [
                                 getNetworkFromDomain(cur_trackers[tracker])]},
                                 hist_items[item].visit_count);
-                }                
+                }
+                
+                updateDemographicServer(0,{hostpage: hostdomain, thirdparties: []});
             }
         }
     );
@@ -107,7 +107,7 @@ function seedDbFromHistory(maxResults) {
 // otherwise it is set to count
 function insertIntoDb(req, count) {    
     for(var tp in req.thirdparties) {        
-        var key = 'tracker:' + req.thirdparties[tp];
+        var key = 'tracker:' + getNetworkFromDomain(req.thirdparties[tp]);
         var trackerBlob = localStorage[key];
         if(trackerBlob != undefined) {
             var curTracker = JSON.parse(trackerBlob);
@@ -164,4 +164,4 @@ chrome.extension.onRequest.addListener(function(req, sender, sendresp) {
     }
 });
 
-//seedDbFromHistory(10);
+seedDbFromHistory(10);

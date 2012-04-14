@@ -51,8 +51,22 @@ $(function() {
 function updateOverview(data) {
 	// update support count
 	$('#support-count').html(data.support);
-	// update overview table
-	$('#overview-table tbody').empty();
+	
+	var fields = ['age', 'income', 'gender', 'education', 'family', 'ethnicity'];
+	
+	// create overview table (first time)
+	if (!$('#overview-table tbody tr').length) {
+		fields.forEach(function(field) {
+			// slightly ugly title case conversion
+			var title = field.replace(/\w\S*/g, function(txt){
+				return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase();
+			});
+			// add rows
+			$('#overview-table tbody').append(
+				'<tr class="' + field + '"><th>' + title + '</th><td class="guess"></td><td class="likelihood"></td></tr>'
+			);
+		});
+	}
 	
 	// scales for overview data
 	var width = d3.scale.linear()
@@ -61,34 +75,55 @@ function updateOverview(data) {
 		color = d3.scale.linear()
 			.domain([0,100])
 			.range(['red', 'blue']);
+		
+	// row
+	var rows = d3.selectAll('#overview-table tbody tr')
+		.data(fields);
 	
-	// add overview rows
-	['age', 'income', 'gender', 'education', 'family', 'ethnicity'].forEach(function(field) {
-	
-		// slightly ugly title case conversion
-		var title = field.replace(/\w\S*/g, function(txt){
-				return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase();
-			}),
-			// get the top guess
-			entries = d3.entries(data[field]);
+	// transition to current values
+	var guesses = fields.reduce(function(agg, field) {
+		// get the top guess
+		var entries = d3.entries(data[field]);
 		entries.sort(function(a,b) { return d3.descending(a.value, b.value)});
-		var top = entries[0];
+		// set it
+		agg[field] = entries[0];
+		return agg;
+	}, {});
+	
+	// update to current guess
+	rows.each(function(d) {
+		var row = d3.select(this),
+			guess = guesses[d];
 		
-		// add rows
-		$('#overview-table tbody').append(
-			'<tr class="' + field + '"><th>' + title + '</th><td>' + top.key + '</td><td class="confidence">' + top.value + '%</td></tr>'
-		);
+		// update guess
+		row.select('td.guess')
+			.text(guess.key);
+			
+		// update likelihood
+		var visCell = row.select('td.likelihood')
+			.style('color', color(guess.value))
+			.text(guess.value + '%');
+			
+		var bar = visCell.selectAll('svg')
+			.data([d])
+		.enter().append('svg:svg')
+			.attr('height', 12)
+			.attr('width', 100)
+		.selectAll('rect')
+			.data([d]);
+			
+		bar.enter().append('svg:rect')
+			.attr('x', 10)
+			.style('fill', color(guess.value))
+			.attr('height', 15)
+			.attr('width', function(d) {
+				console.log(d);
+				return 0
+			});
 		
-		// color value and add bar
-		var visCell = d3.select('#overview-table tr.' + field + ' td.confidence');
-		visCell.style('color', color(top.value));
-		visCell.append('svg:svg')
-				.attr('height', 12)
-				.attr('width', 100)
-			.append('svg:rect')
-				.attr('x', 10)
-				.attr('height', 15)
-				.attr('width', width(top.value))
-				.attr('fill', color(top.value));
-	})
+		// transition bar
+		bar.transition()
+			.attr('width', width(guesses[d].value))
+			.duration(250);
+	});
 }
