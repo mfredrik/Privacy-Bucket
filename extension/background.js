@@ -1,6 +1,47 @@
+
+var demo_server = "http://ec2-184-72-211-4.compute-1.amazonaws.com/";
+
 Object.prototype.hasOwnProperty = function(property) {
     return typeof(this[property]) !== 'undefined'
 };
+
+// sends an update to the back-end demographic server,
+// notifying it of a new host page/tracker observation.
+// the demographics server should send us demographics
+// for the site visited by the user, to cache on the client.
+//
+// arguments:
+// userid: guid for this user
+// req should have two members
+// hostpage: the domain of the page hosting the trackers
+// thirdparties: a list of tracker domains on hostpage
+function updateDemographicServer(userid, req) {
+
+    var xhr = new XMLHttpRequest();
+    
+    for(var tp in req.thirdparties) {
+        
+        xhr.onreadystatechange = function() {        
+            
+            // if we've already cached these demographics, don't worry about it
+            if(localStorage["demo:" + req.hostpage] != undefined)
+                return;
+            
+            if(xhr.readyState == 4) {
+                if(xhr.status == 200) {
+                    var demos = xhr.responseText;
+                    localStorage["demo:" + req.hostpage] = demos;
+                }
+            }
+        }
+        
+        // TODO: map third-party domains to tracker names
+        
+        // we're an extension, so this request can go anywhere
+        xhr.open("GET", demo_server + "update.php?domain=" + req.hostpage, true);
+        xhr.send();
+    }
+}
 
 // quick and dirty url parser
 // this doesn't actually work for all domains - we will have to fix it
@@ -115,11 +156,12 @@ chrome.tabs.onUpdated.addListener(
 );
 
 // receives notifications of observed trackers from the content script
-chrome.extension.onRequest.addListener(function(req, sender, sendresp) {   
+chrome.extension.onRequest.addListener(function(req, sender, sendresp) {
+    
     if(req.thirdparties){
-        //updateDemographicServer(0,req.hostpage);   
+        updateDemographicServer(0,req);   
         insertIntoDb(req);
     }
 });
 
-seedDbFromHistory(10);
+//seedDbFromHistory(10);

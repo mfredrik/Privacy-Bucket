@@ -47,6 +47,7 @@ for(var el in imgEls) {
     if(hostpage != curhost && !contains(thirdparties,curhost)) thirdparties.push(curhost);
 }
 
+
 // send a message to our background script containing all the third parties we witnessed
 chrome.extension.sendRequest({thirdparties: thirdparties, hostpage: parseURL(document.location.toString()).hostdomain});
 
