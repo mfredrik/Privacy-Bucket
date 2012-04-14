@@ -40,7 +40,10 @@ body {
 	overflow: hidden;
 	padding: .5em .2em .5em 1em;
 	border-top: 0 !important;
-	border-right: 0 !important;
+	margin-right: -1px;
+}
+#tracker-tabs label.ui-state-active {
+	border-right-color: #fff;
 }
 
 /* report pane */
