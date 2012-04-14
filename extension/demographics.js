@@ -176,9 +176,10 @@ function getPerTrackerDemographicsStub(key){
 
 function getAdvertisers(){
 	var result = new Array();
-	for(var o in stub) {
+	for(var o in tracker2Demographics) {
 		result.push(o);
 	}
+	console.log("advertisers " + result);
 	return result;	
 }
 
@@ -201,13 +202,67 @@ function getDemographicsFromLocalStore(url){
 	return null;
 }
 
+var init = {
+	age : {
+	    		'< 18' : 9,
+				'18-24' : 16,
+				'25-34' : 20, 
+				'35-44': 25,
+				'45-54' : 20,
+				'55-64' : 7,
+				'65+' : 3
+	    	},
+	    	income : {
+				'$0-50k' : 17,
+				'$50-100k' : 22,
+				'$100-150k' : 27,
+				'$150k+' : 34
+	    	},
+	    	gender : {
+	    		'Male' : 54,
+	    		'Female' : 46
+	    	},
+	    	education : {
+		    	'No College' : 67,
+		 		'College' : 10,
+		 		'Grad School' : 4
+	 		},
+	    	family : {
+	    		'No kids' : 73,
+	    		'Has kids' : 27
+	    	},
+	    	ethnicity : {
+		    	'Caucasian' : 63,
+				'African American':	 18,
+				'Asian':	 8,
+				'Hispanic':	 10,
+				'Other': 1
+	    	}
+		};
+
+function normalize(A){
+	for(index in init){
+		var initBlob = init[index];
+		if(!A[index]) {
+			A[index] = {};
+		}
+		for(index2 in initBlob){
+			if(!A[index][index2]) {
+				A[index][index2] = 0;
+			}
+		}
+	}
+	return A;
+}
+
 // resurn a blob that is the combined distribution across the range of URLs
 function processURLs(urls){
 	console.log('in processURLs');
 	for(var index in urls){
 		var url = urls[index];		
 		var aggregate = null;
-		var dem = getDemographicsFromLocalStore(url);
+		var dem = normalize(getDemographicsFromLocalStore(url));
+		console.log('normalized ' + JSON.stringify(dem));
 		
 		if (aggregate) {
 			for(index in aggregate){
@@ -265,7 +320,7 @@ function processTrackersFromLocalStore(){
 			var result = processURLs(urls);
 			if(result){
 				console.log(trackerUrl + ' : ' + JSON.stringify(result));
-				tracker2Demographics[tracker] = result;
+				tracker2Demographics[trackerUrl] = result;
 			}else{
 				console.log(trackerUrl + ' : no data');
 			}
