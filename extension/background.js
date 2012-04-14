@@ -55,7 +55,7 @@ function doProd(A,B) {
         var sum = 0;
         for(var idx2 in init[idx]) {
             if(!isNumber(A[idx][idx2]) || !isNumber(B[idx][idx2])) {
-                C[idx][idx2] = 0;
+                C[idx][idx2] = 1;
                 continue;
             }
             
