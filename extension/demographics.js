@@ -156,12 +156,26 @@ var allUrls = new Array();
 var domainToIdMap = getDomainToId();
 function processTrackersFromLocalStore(){
 	for(var domain in localStorage){
-		//alert('domain: ' + domain);
-		if(domain.substr(0,8) == 'tracker:'){
+		if(domain.substr(0,6) == 'guess:'){
 			var urls = new Array();
-			var trackerUrl = domain.substr(8, domain.length-7);
+			var trackerUrl = domain.substr(6, domain.length-6);
 			var json = JSON.parse(localStorage[domain]);
-			tracker2Demographics[trackerUrl] = {support : json.length};
+			if(tracker2Demographics[trackerUrl] && tracker2Demographics[trackerUrl].support){
+				var support = tracker2Demographics[trackerUrl].support;
+				tracker2Demographics[trackerUrl] = json;
+				tracker2Demographics[trackerUrl].support = support;
+			}else{
+				tracker2Demographics[trackerUrl] = json;
+			}
+		}
+		if(domain.substr(0,8) == 'tracker:'){
+		 	var urls = new Array();
+		 	var trackerUrl = domain.substr(8, domain.length-7);
+		 	var json = JSON.parse(localStorage[domain]);
+		 	if(!tracker2Demographics[trackerUrl]){
+		 		tracker2Demographics[trackerUrl] = {};
+		 	}
+			tracker2Demographics[trackerUrl].support = json;
 		}
 	}
 }
@@ -197,7 +211,7 @@ function getTrackerFromLocalStore(tracker){
 						if(DEBUG) console.log(trackerUrl + ' : no data');
 					}
 					if(domainToIdMap[tracker]) {
-						result.netword_id = domainToIdMap[tracker];
+						result.network_id = domainToIdMap[tracker];
 					}
 					return result;
 				}
