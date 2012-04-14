@@ -66,7 +66,8 @@ function seedDbFromHistory(maxResults) {
 // otherwise it is set to count
 function insertIntoDb(req, count) {    
     for(var tp in req.thirdparties) {        
-        var trackerBlob = localStorage[req.thirdparties[tp]];
+        var key = 'tracker:' + req.thirdparties[tp];
+        var trackerBlob = localStorage[key];
         if(trackerBlob != undefined) {
             var curTracker = JSON.parse(trackerBlob);
         
@@ -80,10 +81,10 @@ function insertIntoDb(req, count) {
             
             if(found == 0)
                 curTracker.push({"domain": req.hostpage, "count": 1});
-            localStorage[req.thirdparties[tp]] = JSON.stringify(curTracker);
+            localStorage[key] = JSON.stringify(curTracker);
         } else {
-            localStorage[req.thirdparties[tp]] = JSON.stringify([{"domain": req.hostpage, "count": 1}]);
-        }        
+            localStorage[key] = JSON.stringify([{"domain": req.hostpage, "count": 1}]);
+        }
     }
 }
 
