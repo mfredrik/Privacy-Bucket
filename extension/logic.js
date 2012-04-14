@@ -1,55 +1,35 @@
-function getData(){}
+// history manipulation
+function processHistory(){
+	var histories = [];
+	var visits = [];
 
-stub = 
-{ 
-    	'All' : 
-    	{
-	    	network_id : -1, 
-	    	text : 'All data',
-	    	age : {
-	    		'< 18' : 9,
-				'18-24' : 16,
-				'25-34' : 20, 
-				'35-44': 25,
-				'45-54' : 20,
-				'55-64' : 7,
-				'65+' : 3
-	    	},
-	    	income : {
-				'$0-50k' : 17,
-				'$50-100k' : 22,
-				'$100-150k' : 27,
-				'$150k+' : 34
-	    	},
-	    	gender : {
-	    		'Male' : 54,
-	    		'Female' 46
-	    	},
-	    	education : {
-		    	'No College' : 67
-		 		'College' : 10,
-		 		'Grad School' : 4
-	 		},
-	    	family : {
-	    		'No kids' : 73,
-	    		'Has kids' : 27: 
-	    	},
-	    	etnithity : {
-		    	'Caucasian' : 63,
-				'African American':	 18,
-				'Asian':	 8,
-				'Hispanic':	 10,
-				'Other': 1
-	    	};
+	chrome.history.search({text : '', maxResults:0}, function(historyItems) {
+	    var historiesProcessed = 0;
+	    for (var i = 0; i < historyItems.length; i++) {
+	        histories.push(historyItems[i]);
+	        chrome.history.getVisits({url: historyItems[i].url}, function(visitItems) {
+	            for (var i = 0; i < visitItems.length; i++) {
+	                visits.push(visitItems[i]);
+	            }
+	            historiesProcessed++;
+	            if (historiesProcessed === historyItems.length) {
+	                console.log(visits.length + ' visits');
+	            }
+	        });
 	    }
-};
-
-function getDataStub(key){
-	return stub[key];
+	    console.log(histories.length + ' histories');
+	});
 }
 
-function getKeys(){
-	var result = new Array();
-	foreach(var o in stub) result.push(o);
-	return result;	
-}
+// request processing
+chrome.webRequest.onRequest.addListener( 
+	function(request) 
+	{
+		console.log("outgoing URL: " + request.url);
+	});
+
+
+
+// will contain code that examines that local store
+// containing tracker/host page links, computes probabilities,
+// and displays them in popup.html
