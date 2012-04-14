@@ -47,3 +47,5 @@ function processTrackersFromLocalStore(){
 		}
 	}
 }
+
+processTrackersFromLocalStore();
