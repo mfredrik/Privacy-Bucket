@@ -5,7 +5,8 @@ function getPerTrackerDemographics(key){
 stub = { 
     	'All data' : 
     	{
-	    	network_id : -1, 
+	    	network_id : -1,
+			support: 20,
 	    	text : 'All data',
 	    	age : {
 	    		'< 18' : 9,
@@ -47,6 +48,7 @@ stub = {
     	{
 	    	network_id : 37, 
 	    	text : 'DoubleClick',
+			support: 10,
 	    	age : {
 	    		'< 18' : 9,
 				'18-24' : 16,
@@ -87,6 +89,7 @@ stub = {
     	{
 	    	network_id : 3, 
 	    	text : 'DoubleClick',
+			support: 8,
 	    	age : {
 	    		'< 18' : 9,
 				'18-24' : 16,
@@ -126,6 +129,7 @@ stub = {
 	    'Audience Science' : 
     	{
 	    	network_id : 16, 
+			support: 4,
 	    	text : 'Audience Science',
 	    	age : {
 	    		'< 18' : 9,
