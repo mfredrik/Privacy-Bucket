@@ -3,20 +3,31 @@
     <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.6.1/jquery.min.js"></script>
     <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.8.1/jquery-ui.min.js"></script>
     <link type="text/css" href="https://ajax.googleapis.com/ajax/libs/jqueryui/1.7.2/themes/blitzer/ui.all.css" rel="stylesheet">
+    <script type="text/javascript" src="settings.js"></script>
+    <script type="text/javascript" src="logic.js"></script>
     <script type="text/javascript" src="popup.js"></script>
     <link type="text/css" href="style.css" rel="stylesheet">
     <title class='title'>Privacy Bucket</title>
 </head>
 
 <body>
-<p class='title'>Privacy Bucket</p>
-  <div id="tabs-right" class="tabs ui-tabs ui-widget ui-widget-content ui-corner-all">
-  	<ul class="ui-tabs-nav ui-helper-reset ui-helper-clearfix ui-widget-header ui-corner-all"></ul>
-    <!--
-  	<div id="tabs-right-1" class="ui-tabs-panel ui-widget-content ui-corner-bottom">
-      <img src="images/bucket.jpg" width='50%'/><p>Based on the entire history</p>
-  	</div>
-  -->
-  </div>
+	<p id="title">Privacy Bucket</p>
+	<div id="app" role="main">
+		<div id="tracker-tabs">
+			<input type="radio" id="all" name="radio" /><label for="all">All</label>
+			<input type="radio" id="doubleclick" name="radio" checked="checked" /><label for="doubleclick">DoubleClick</label>
+			<input type="radio" id="acxiom" name="radio" /><label for="acxiom">Acxiom</label>
+		</div>
+		<div id="report-pane">
+		  <div id="tabs-right" class="tabs ui-tabs ui-widget ui-widget-content ui-corner-all">
+			<ul class="ui-tabs-nav ui-helper-reset ui-helper-clearfix ui-widget-header ui-corner-all"></ul>
+			<!--
+			<div id="tabs-right-1" class="ui-tabs-panel ui-widget-content ui-corner-bottom">
+			  <img src="images/bucket.jpg" width='50%'/><p>Based on the entire history</p>
+			</div>
+		  -->
+		  </div>
+		</div>
+	</div>
 </body>
 </html>
