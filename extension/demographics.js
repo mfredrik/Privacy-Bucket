@@ -190,6 +190,7 @@ function getDemographicsFromLocalStore(url){
 	return null;
 }
 
+// resurn a blob
 function processURLs(urls){
 	for(var index in urls){
 		var url = urls[index];
@@ -206,6 +207,7 @@ function processURLs(urls){
 			// normalize
 			for(var index in aggregate){
 				aggregate[index] /= sum;
+				aggregate[index] *= 100;
 			}
 		} else {
 			aggregate = dem;
