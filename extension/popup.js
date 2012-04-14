@@ -1,5 +1,5 @@
 $(function() {
-	var demographics = demographicsStub;
+	//var demographics = demographicsStub;
 
 	demographics.processTrackersFromLocalStore();
 	
