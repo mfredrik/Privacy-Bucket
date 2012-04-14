@@ -1,13 +1,49 @@
+body {
+	margin: 0;
+    min-width: 800px;
+    height: 260px;
+    overflow: hidden;
+}
 p {
     font-family : "Calibri", "Arial", serif;
     font-size : 12px;
 }
 
-body {
-    min-width: 800px;
-    height: 260px;
-    overflow: hidden;
+/* title */
+@font-face {  
+	font-family: titleFont ;  
+	src: url( chrome-extension:/fonts/REDCIRCL.ttf ) format("truetype");
+} 
+#title {
+	font-family: titleFont, verdana, helvetica, sans-serif;
+	font-size: 36px;
+	color: red;
+	padding: 0.3em 0.2em;
+	margin: 0;
 }
+
+/* app container */
+#app {
+	border-top: 1px solid #ccc;
+}
+
+/* tracker tabs */
+#tracker-tabs {
+	width: 10em;
+	float: left;
+}
+#tracker-tabs label {
+	display: block;
+	width: 9em;
+	overflow: hidden;
+	padding-left: 1em;
+}
+
+#report-pane {
+	margin-left: 11em;
+	padding: 0.5em;
+}
+
 #tabs-right {
     position: relative;
     padding-right: 6.5em;
@@ -43,18 +79,8 @@ body {
     width: 400px;
 }
 
-@font-face {  
-    font-family: titleFont ;  
-    src: url( chrome-extension:/fonts/REDCIRCL.ttf ) format("truetype");
-} 
 
 .title { 
-    font-family: titleFont, verdana, helvetica, sans-serif;
-    font-size: 36px;
-    color: red;
-    padding-left: 0.2em;
-    padding-top: 0.2em;
-    padding-bottom: 0em;
 }
 
 .demographic-table {
