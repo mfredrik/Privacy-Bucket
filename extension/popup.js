@@ -1,7 +1,8 @@
 $(function() {
 	// layout setup
 	$('#view-tabs').tabs();
-	
+	processTrackersFromLocalStore();
+
 	// add current trackers to nav
 	var trackers = getAdvertisers();
 	trackers.forEach(function(name, index) {
