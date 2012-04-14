@@ -71,6 +71,9 @@ function getNetworkFromDomain(domain) {
 // scans the user's history, and establishes host page/tracker
 // links from the fourthparty data.
 function seedDbFromHistory(maxResults) {
+    
+    if(localStorage['seeded'] != undefined) return;
+    
     // i wonder if there is a way to specify an unlimited number of results...
     var hist = chrome.history.search({"maxResults": maxResults, "text": ""},
         function (hist_items) {            
@@ -91,6 +94,8 @@ function seedDbFromHistory(maxResults) {
             }
         }
     );
+    
+    localStorage['seeded'] = "true";
 }
 
 // insertIntoDb updates the local store with a new "link"
