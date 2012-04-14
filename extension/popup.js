@@ -1,6 +1,8 @@
 $(function() {
 	$('#tracker-tabs').buttonset();
 	$('#tracker-tabs label').removeClass('ui-corner-right ui-corner-left');
+
+	processLocalStore();
 });
 
 tabCounter = 0;
