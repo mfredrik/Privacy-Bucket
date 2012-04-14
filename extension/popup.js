@@ -1,11 +1,13 @@
 $(function() {
+	//var demographics = demographicsStub;
+
+	demographics.processTrackersFromLocalStore();
+	
 	// layout setup
 	$('#view-tabs').tabs();
-	processTrackersFromLocalStore();
 
 	// add current trackers to nav
-	var trackers = getAdvertisers();
-	console.log(trackers);
+	var trackers = demographics.getAdvertisers();
 	trackers.forEach(function(name, index) {
 		var id = name.replace(/\W/g, '_'),
 			checked = !index ? 'checked="checked"' : '';
@@ -19,7 +21,7 @@ $(function() {
 		.click(function() {
 			var $label = $(this),
 				key = $label.text(),
-				data = getPerTrackerDemographics(key),
+				data = demographics.getPerTrackerDemographics(key),
 				networkId = data.network_id > 0 && data.network_id,
 				networkUrl = networkId && ('http://privacychoice.org/companies/index/' + networkId);
 			// set the title and image
@@ -63,7 +65,7 @@ function updateOverview(data) {
 			});
 			// add rows
 			$('#overview-table tbody').append(
-				'<tr class="' + field + '"><th>' + title + '</th><td class="guess"></td><td class="likelihood"></td></tr>'
+				'<tr class="' + field + '"><th>' + title + '</th><td class="guess"></td><td class="likelihood"><span class="value"></span></td></tr>'
 			);
 		});
 	}
@@ -101,29 +103,27 @@ function updateOverview(data) {
 			
 		// update likelihood
 		var visCell = row.select('td.likelihood')
-			.style('color', color(guess.value))
+			.style('color', color(guess.value));
+		
+		visCell.select('span.value')
 			.text(guess.value + '%');
 			
-		var bar = visCell.selectAll('svg')
-			.data([d])
-		.enter().append('svg:svg')
-			.attr('height', 12)
-			.attr('width', 100)
-		.selectAll('rect')
+		var svg = visCell.selectAll('svg')
 			.data([d]);
 			
-		bar.enter().append('svg:rect')
+		svg.enter().append('svg:svg')
+			.attr('height', 12)
+			.attr('width', 100)
+		.append('svg:rect')
 			.attr('x', 10)
 			.style('fill', color(guess.value))
 			.attr('height', 15)
-			.attr('width', function(d) {
-				console.log(d);
-				return 0
-			});
+			.attr('width', 0);
 		
 		// transition bar
-		bar.transition()
-			.attr('width', width(guesses[d].value))
-			.duration(250);
+		visCell.selectAll('svg rect')
+			.transition()
+				.attr('width', function(d) { return width(guesses[d].value) })
+				.duration(250);
 	});
 }
