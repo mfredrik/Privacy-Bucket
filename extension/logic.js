@@ -35,7 +35,7 @@ function processTrackersFromLocalStore(){
 	for(var domain in localStorage){
 		if(domain.startsWith('tracker:')){
 			var urls = new Array();
-			if(domain.substr(7, domain.length-7) == url){
+			if(domain.substr(8, domain.length-7) == url){
 				var json = JSON.parse(localStorage[domain]);
 				for (var index in json) {
 					for(i = 0; i < json.count ; i++){
