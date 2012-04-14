@@ -189,3 +189,28 @@ function getDemographicsFromLocalStore(url){
 	}
 	return null;
 }
+
+function processURLs(urls){
+	for(var index in urls){
+		var url = urls[index];
+		var aggregate = null;
+		var dem = getDemographicsFromLocalStore(url);
+		if (aggregate) {
+			var sum = 0;
+			// product
+			for(var index in aggregate){
+				var product =  aggregate[index] * dem[index];
+				aggregate[index] = product;
+				sum += product;
+			}
+			// normalize
+			for(var index in aggregate){
+				aggregate[index] /= sum;
+			}
+		} else {
+			aggregate = dem;
+		}
+	}
+
+	return aggregate;
+}
