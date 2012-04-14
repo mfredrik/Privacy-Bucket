@@ -109,9 +109,14 @@ function normalize(A){
 
 // resurn a blob that is the combined distribution across the range of URLs
 function processURLs(urls){
+<<<<<<< HEAD
 	if(DEBUG) console.log('in processURLs');
 	var aggregate = null;
 	for(var index in urls){
+=======
+	console.log('in processURLs');
+	for(var index in urls) {
+>>>>>>> Didn't change anything substantial.
 		var url = urls[index];		
 		var dem = normalize(getDemographicsFromLocalStore(url));
 		//console.log('normalized ' + JSON.stringify(dem));
