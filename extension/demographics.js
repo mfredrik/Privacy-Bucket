@@ -187,6 +187,11 @@ function processTrackersFromLocalStore(){
 			}
 		}
 	}
+	for(var domain in tracker2Demographics){
+		if(!tracker2Demographics[domain].support || !Array.isArray(tracker2Demographics[domain].support)){
+			console.log('no support for ' + domain + ' ' + tracker2Demographics[domain]);
+		}
+	}
 }
 
 // will contain code that examines that local store
