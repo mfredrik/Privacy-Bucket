@@ -28,6 +28,9 @@ function getAdvertisers(){
 	} );
 	//console.log("advertisers " + result);
 	if(addTotals) result.unshift('All');
+	for(var o in tracker2Demographics) {
+		console.log('support: ' + JSON.stringify(tracker2Demographics[o].support));
+	}
 	return result;	
 }
 
