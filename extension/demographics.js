@@ -211,7 +211,7 @@ function getTrackerFromLocalStore(tracker){
 		console.log(JSON.stringify(tracker2Demographics[tracker]));
 		return tracker2Demographics[tracker];
 	}
-	console.log('Not in cache ' + tracker);
+	console.log('Computing ' + tracker);
 	for(var domain in localStorage){
 		//alert('domain: ' + domain);
 		if(domain.substr(0,8) == 'tracker:'){
@@ -247,19 +247,24 @@ function getTrackerFromLocalStore(tracker){
 	}
 	if(addTotals){
 		if(tracker == 'All'){
-			var result = JSON.parse(localStorage["guess:All"]);
-			result.support = allUrls;
-			result.obscount = allUrls.length;
-			//var result = processURLs(allUrls);	
-			if(result){
-				if(DEBUG) console.log('All' + ' : ' + JSON.stringify(result));				
-				//result.support = -1;	// allUrls.length;
-				result.network_id = -1;
-				tracker2Demographics['All'] = result;
-			}else{
-				if(DEBUG) console.log('All' + ' : no data');
+			var allGuess  = localStorage["guess:All"];
+			try{
+				var result = JSON.parse(allGuess);
+				result.support = allUrls;
+				result.obscount = allUrls.length;
+				//var result = processURLs(allUrls);	
+				if(result){
+					if(DEBUG) console.log('All' + ' : ' + JSON.stringify(result));				
+					//result.support = -1;	// allUrls.length;
+					result.network_id = -1;
+					tracker2Demographics['All'] = result;
+				}else{
+					if(DEBUG) console.log('All' + ' : no data');
+				}
+				return result;
+			}catch(e){
+				console.log("Exception parsing: " + e + ' for ' + allGuess);
 			}
-			return result;
 		}
 	}
 
