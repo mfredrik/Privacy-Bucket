@@ -55,7 +55,7 @@ function getDemographicsFromLocalStore(url){
 
 var init = {
 	age : {
-	    		'< 18' : 9,
+	    		'<18' : 9,
 				'18-24' : 16,
 				'25-34' : 20, 
 				'35-44': 25,
@@ -74,20 +74,20 @@ var init = {
 	    		'female' : 46
 	    	},
 	    	education : {
-		    	'no college' : 67,
-		 		'college' : 10,
-		 		'grad school' : 4
+		    	'No College' : 67,
+		 		'College' : 10,
+		 		'Grad School' : 4
 	 		},
 	    	family : {
 	    		'no kids' : 73,
 	    		'has kids' : 27
 	    	},
 	    	ethnicity : {
-		    	'caucasian' : 63,
-				'african american':	 18,
-				'asian':	 8,
-				'hispanic':	 10,
-				'other': 1
+		    	'Caucasian' : 63,
+				'African american':	 18,
+				'Asian':	 8,
+				'Hispanic':	 10,
+				'Other': 1
 	    	}
 		};
 
