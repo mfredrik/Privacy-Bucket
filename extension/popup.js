@@ -21,27 +21,6 @@ $(function() {
 		$('#tracker-tabs').append('<input type="radio" id="nav' + id + '" name="tracker" ' + checked + '/><label for="nav' + id +'">' + name + '</label>');
 	});
 	
-	// toggle only network id
-    var filterNetworks = function() {
-		var toggle = !$('#network-toggle').prop('checked'),
-			notNetwork = trackers.filter(function(d) {
-				var data = demographics.getPerTrackerDemographics(d);
-				return !data || !data.network_id;
-			});
-		// toggle tabs
-		notNetwork.forEach(function(name) {
-			var id = toId(name);
-			$('label[for="nav' + id + '"]')
-				.toggle(toggle);
-		});
-		// select remaining tab, if any
-		$('#tracker-tabs label:visible')
-			.first().click();
-	}
-	$('#network-toggle').click(filterNetworks);
-    // kick off
-    filterNetworks();
-	
 	// set up nav functionality
 	$('#tracker-tabs').buttonset();
 	$('#tracker-tabs label')
@@ -71,9 +50,29 @@ $(function() {
 			// update report tabs
 			updateReports(data, key);
 		
-		})
-		// initial kick off
-		.first().click();
+		});
+	
+	// toggle only network id
+    var filterNetworks = function() {
+		var toggle = !$('#network-toggle').prop('checked'),
+			notNetwork = trackers.filter(function(d) {
+				var data = demographics.getPerTrackerDemographics(d);
+				return !data || !data.network_id;
+			});
+		// toggle tabs
+		notNetwork.forEach(function(name) {
+			var id = toId(name);
+			$('label[for="nav' + id + '"]')
+				.toggle(toggle);
+		});
+		// select remaining tab, if any
+		$('#tracker-tabs label:visible')
+			.first().click();
+	}
+	$('#network-toggle').click(filterNetworks);
+        
+    // initial kick off
+    filterNetworks();
 
 	function updateReports(data, domain) {
 		// update support count
