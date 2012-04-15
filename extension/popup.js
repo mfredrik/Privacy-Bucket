@@ -22,8 +22,8 @@ $(function() {
 	});
 	
 	// toggle only network id
-	$('#network-toggle').click(function() {
-		var toggle = !$(this).prop('checked'),
+    var filterNetworks = function() {
+		var toggle = !$('#network-toggle').prop('checked'),
 			notNetwork = trackers.filter(function(d) {
 				var data = demographics.getPerTrackerDemographics(d);
 				return !data || !data.network_id;
@@ -37,7 +37,10 @@ $(function() {
 		// select remaining tab, if any
 		$('#tracker-tabs label:visible')
 			.first().click();
-	});
+	}
+	$('#network-toggle').click(filterNetworks);
+    // kick off
+    filterNetworks();
 	
 	// set up nav functionality
 	$('#tracker-tabs').buttonset();
@@ -54,7 +57,7 @@ $(function() {
 			if (networkId) {
 				// add more info link
 				$('#tracker-title')
-					.append('<span class="moreinfo">(<a href="' + networkUrl + '" target="_blank">More Info</a>)</span>');
+					.append('<span class="moreinfo">(<a href="' + networkUrl + '" target="_blank">PrivacyChoice summary</a>)</span>');
 				// image
 				$('#tracker-image').show();
 				$('#tracker-image a')
