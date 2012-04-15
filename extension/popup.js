@@ -28,6 +28,7 @@ $(function() {
 				var data = demographics.getPerTrackerDemographics(d);
 				return !data || !data.network_id;
 			});
+		console.log("not network");
 		// toggle tabs
 		notNetwork.forEach(function(name) {
 			var id = toId(name);
