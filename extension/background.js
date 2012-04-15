@@ -197,7 +197,7 @@ function insertIntoDb(req, count) {
                 curTracker.push({"domain": req.hostpage, "count": 1});
             localStorage[key] = JSON.stringify(curTracker);
         } else {
-            localStorage[key] = JSON.stringify([{"domain": req.hostpage, "count": 1}]);
+            localStorage[key] = JSON.stringify([{"domain": req.hostpage, "count": 1}]);            
         }
     }
 }
