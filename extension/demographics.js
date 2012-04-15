@@ -22,8 +22,8 @@ function getAdvertisers(){
 	}
 	result.sort(function(a, b) {
 		return d3.descending(
-			(tracker2Demographics[a].support && tracker2Demographics[a].support.length) || 0,
-			(tracker2Demographics[b].support && tracker2Demographics[b].support.length) || 0
+			(tracker2Demographics[a].obscount /*&& tracker2Demographics[a].support.length*/) || 0,
+			(tracker2Demographics[b].obscount /*&& tracker2Demographics[b].support.length*/) || 0
 			);
 	} );
 	//console.log("advertisers " + result);
@@ -168,10 +168,21 @@ function processTrackersFromLocalStore(){
 			tracker2Demographics[trackerUrl] = json;
 			if(localStorage["tracker:" + trackerUrl] != undefined) {
 				tracker2Demographics[trackerUrl].support = JSON.parse(localStorage["tracker:" + trackerUrl]);
+				var jsont = JSON.parse(localStorage["tracker:" + trackerUrl]);
+				var obscount = 0;
+				for(i = 0; i < jsont.length ; i++){
+					obscount += jsont[i].count;					
+				}
+				tracker2Demographics[trackerUrl].obscount = obscount;				
+			}
+			if(trackerUrl == "All") {
+				var allcnt = localStorage["count:All"];
+				if(allcnt)
+					tracker2Demographics[trackerUrl].obscount = allcnt;			
 			}
 			if (DEBUG) console.log('Setting ' + trackerUrl + ' = ' + JSON.stringify(json));
 			if(tracker2Demographics[trackerUrl] && tracker2Demographics[trackerUrl].support){
-				var support = tracker2Demographics[trackerUrl].support;				
+				var support = tracker2Demographics[trackerUrl].support;	
 				tracker2Demographics[trackerUrl].support = support;
 			}
 		}
@@ -220,9 +231,11 @@ function getTrackerFromLocalStore(tracker){
 				var trackerUrl = domain.substr(8, domain.length-7);
 				if(trackerUrl == tracker){
 					 var json = JSON.parse(localStorage[domain]);
+					 var obscount = 0;
 					 for (var index in json) {
 						for(i = 0; i < json.length ; i++){
 							urls.push(json[index].domain);
+							obscount += json[index].count;
 						}
 					}
 					var result = processURLs(urls);
@@ -232,6 +245,7 @@ function getTrackerFromLocalStore(tracker){
 					}else{
 						if(DEBUG) console.log(trackerUrl + ' : no data');
 					}
+					result.obscount = obscount;
 
 					return result;
 				}
@@ -247,23 +261,21 @@ function getTrackerFromLocalStore(tracker){
 	}
 	if(addTotals){
 		if(tracker == 'All'){
-			var allGuess  = localStorage["guess:All"];
-			try{
-				var result = JSON.parse(allGuess);
-				result.support = allUrls;
+			var result = JSON.parse(localStorage["guess:All"]);
+			result.support = allUrls;
+			var allcnt = localStorage["count:All"];
+			if(allcnt)
+				result.obscount = allcnt;
+			else
 				result.obscount = allUrls.length;
-				//var result = processURLs(allUrls);	
-				if(result){
-					if(DEBUG) console.log('All' + ' : ' + JSON.stringify(result));				
-					//result.support = -1;	// allUrls.length;
-					result.network_id = -1;
-					tracker2Demographics['All'] = result;
-				}else{
-					if(DEBUG) console.log('All' + ' : no data');
-				}
-				return result;
-			}catch(e){
-				console.log("Exception parsing: " + e + ' for ' + allGuess);
+			//var result = processURLs(allUrls);	
+			if(result){
+				if(DEBUG) console.log('All' + ' : ' + JSON.stringify(result));				
+				//result.support = -1;	// allUrls.length;
+				result.network_id = -1;
+				tracker2Demographics['All'] = result;
+			}else{
+				if(DEBUG) console.log('All' + ' : no data');
 			}
 		}
 	}

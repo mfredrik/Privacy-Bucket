@@ -1,6 +1,17 @@
 
 var demo_server = "http://ec2-184-72-211-4.compute-1.amazonaws.com/";
 
+function getUnique(x){
+   var u = {}, a = [];
+   for(var i = 0, l = x.length; i < l; ++i){
+      if(x[i] in u)
+         continue;
+      a.push(x[i]);
+      u[x[i]] = 1;
+   }
+   return a;
+};
+
 Object.prototype.hasOwnProperty = function(property) {
     return typeof(this[property]) !== 'undefined'
 };
@@ -22,14 +33,18 @@ function updateDemographicServer(userid, req) {
     xhr.onreadystatechange = function() {        
         
         // if we've already cached these demographics, don't worry about it
-        if(localStorage["demo:" + req.hostpage] != undefined)
+        if(localStorage["demo:" + req.hostpage] != undefined) {
+            updateTrackerGuesses(req);
             return;
+        }
         
         if(xhr.readyState == 4) {
             if(xhr.status == 200) {
                 var demos = xhr.responseText;
                 localStorage["demo:" + req.hostpage] = demos;                
                 
+                // This must be called from here, as the function expects
+                // demographics for all host pages
                 updateTrackerGuesses(req);
             }
         }
@@ -75,8 +90,7 @@ function doProd(A,B) {
 }
 
 function updateTrackerGuesses(req) {
-    
-    
+   
     var hp_demos = localStorage["demo:" + req.hostpage];
     hp_demos = normalize(JSON.parse(hp_demos));
     hp_demos.domain = req.hostpage;
@@ -84,11 +98,13 @@ function updateTrackerGuesses(req) {
     var allGuessBlob = localStorage["guess:All"];
     if(!allGuessBlob) {
         localStorage["guess:All"] = JSON.stringify(hp_demos);
+        localStorage["count:All"] = 1;
     } else {
         var curAll = normalize(JSON.parse(allGuessBlob));
         var prod = doProd(curAll,hp_demos);
-        prod["domain"] = "All";
+        prod["domain"] = "All";        
         localStorage["guess:All"] = JSON.stringify(prod);
+        localStorage["count:All"] = +localStorage["count:All"] + 1;
     }
     
     for(var tp in req.thirdparties) {
@@ -148,14 +164,16 @@ function seedDbFromHistory(maxResults) {
                 var url = hist_items[item].url;
                 var hostdomain = parseURL(url).hostdomain;                
                 var cur_trackers = trackers[hostdomain];
-
+                
+                cur_trackers = getUnique(cur_trackers);
+                
                 for(var tracker in cur_trackers) {                    
                     insertIntoDb({
                             "hostpage": hostdomain,
                             "thirdparties": [
-                                getNetworkFromDomain(cur_trackers[tracker])]},
-                                hist_items[item].visit_count);
+                                getNetworkFromDomain(cur_trackers[tracker])]});
                     cur_trackers[tracker] = getNetworkFromDomain(cur_trackers[tracker]);
+                    //updateDemographicServer(0,{hostpage: hostdomain, thirdparties: [cur_trackers[tracker]]});
                 }
                 
                 updateDemographicServer(0,{hostpage: hostdomain, thirdparties: cur_trackers});                
