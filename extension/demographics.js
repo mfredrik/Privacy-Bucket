@@ -84,7 +84,7 @@ var init = {
 	    	},
 	    	ethnicity : {
 		    	'Caucasian' : 63,
-				'African american':	 18,
+				'African American':	 18,
 				'Asian':	 8,
 				'Hispanic':	 10,
 				'Other': 1
@@ -164,6 +164,8 @@ function processTrackersFromLocalStore(){
 			var trackerUrl = domain.substr(6, domain.length-6);
 			var json = JSON.parse(localStorage[domain]);
 			tracker2Demographics[trackerUrl] = json;
+			if(localStorage["tracker:" + trackerUrl] != undefined)
+				tracker2Demographics[trackerUrl].support = JSON.parse(localStorage["tracker:" + trackerUrl]);
 			console.log('Setting ' + trackerUrl + ' = ' + JSON.stringify(json));
 			if(tracker2Demographics[trackerUrl] && tracker2Demographics[trackerUrl].support){
 				var support = tracker2Demographics[trackerUrl].support;				

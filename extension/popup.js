@@ -73,6 +73,7 @@ $(function() {
 
 	function updateReports(data) {
 		// update support count
+		console.log(JSON.stringify(data));
 		$('span.support-count').html(data.support ? data.support.length : 0);
 		
 		function toTitle(field) {
