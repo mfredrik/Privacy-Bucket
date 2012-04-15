@@ -104,7 +104,7 @@ function normalize(A){
 		}
 		for(index2 in initBlob){
 			if(!A[index][index2]) {
-				A[index][index2] = 0;
+				A[index][index2] = 1;
 			}
 		}
 	}

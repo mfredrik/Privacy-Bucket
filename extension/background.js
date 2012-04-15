@@ -59,14 +59,14 @@ function doProd(A,B) {
                 continue;
             }
             
-            var product = A[idx][idx2] * B[idx][idx2];
+            var product = A[idx][idx2]/100 * B[idx][idx2]/100;
             C[idx][idx2] = product;
             sum += product;
         }
         for(var idx2 in init[idx]) {
             if(sum > 0) {
                 C[idx][idx2] /= sum;
-                C[idx][idx2] = Math.round(C[idx][idx2]*100);
+                C[idx][idx2] = C[idx][idx2]*100;
             }
         }
     }
