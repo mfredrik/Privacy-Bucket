@@ -20,9 +20,10 @@ body {
 	font-family: titleFont, verdana, helvetica, sans-serif;
 	font-size: 36px;
 	color: red;
-	padding: 0.3em 0.2em;
+	padding: 0.3em 20px 0.3em 0.2em;
 	margin: 0;
 	height: 40px;
+    background: url( chrome-extension:/images/bucket.png ) no-repeat 400px 0;
 }
 
 #network-toggle-form {
