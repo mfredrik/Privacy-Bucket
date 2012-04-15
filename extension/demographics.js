@@ -164,8 +164,9 @@ function processTrackersFromLocalStore(){
 			var trackerUrl = domain.substr(6, domain.length-6);
 			var json = JSON.parse(localStorage[domain]);
 			tracker2Demographics[trackerUrl] = json;
-			if(localStorage["tracker:" + trackerUrl] != undefined)
+			if(localStorage["tracker:" + trackerUrl] != undefined) {
 				tracker2Demographics[trackerUrl].support = JSON.parse(localStorage["tracker:" + trackerUrl]);
+			}
 			console.log('Setting ' + trackerUrl + ' = ' + JSON.stringify(json));
 			if(tracker2Demographics[trackerUrl] && tracker2Demographics[trackerUrl].support){
 				var support = tracker2Demographics[trackerUrl].support;				
@@ -222,7 +223,7 @@ function getTrackerFromLocalStore(tracker){
 							urls.push(json[index].domain);
 						}
 					}
-					var result = processURLs(urls);	
+					var result = processURLs(urls);
 					if(result){
 						if(DEBUG) console.log(trackerUrl + ' : ' + JSON.stringify(result));
 						tracker2Demographics[trackerUrl] = result;
@@ -245,10 +246,12 @@ function getTrackerFromLocalStore(tracker){
 	if(addTotals){
 		if(tracker == 'All'){
 			var result = JSON.parse(localStorage["guess:all"]);
+			result.support = allUrls;
+			result.obscount = allUrls.length;
 			//var result = processURLs(allUrls);	
 			if(result){
 				if(DEBUG) console.log('All' + ' : ' + JSON.stringify(result));				
-				result.support = -1;	// allUrls.length;
+				//result.support = -1;	// allUrls.length;
 				result.network_id = -1;
 				tracker2Demographics['All'] = result;
 			}else{
