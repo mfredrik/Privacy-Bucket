@@ -266,7 +266,6 @@ $(function() {
 						left: data.support.slice(0, midPoint),
 						right: data.support.slice(midPoint)
 					};
-				console.log('doing it', midPoint);
 				['left','right'].forEach(function(side) {
 					$('#tabs-observations div.details-container.' + side)
 						.empty();
