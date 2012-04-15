@@ -105,7 +105,10 @@ function getNetworkFromDomain(domain) {
 
 function updateTrackerGuesses(req) {
    
-    var hp_demos = localStorage["demo:" + req.hostpage];
+    var hp_demos = undefined;
+    while(hp_demos == undefined)
+        hp_demos = localStorage["demo:" + req.hostpage];
+
     hp_demos = normalize(JSON.parse(hp_demos));
     hp_demos.domain = req.hostpage;
     
