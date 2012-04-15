@@ -209,8 +209,22 @@ $(function() {
 						.attr('text-anchor', 'end')
 						.text(function(d) { return toTitle(d.key) });
 						
-					var container = svg.selectAll('rect')
+					entry.append('svg:text')
+						.attr('class', 'datalabel')
+						.attr('x', lw)
+						.attr('dx', 3)
+						.attr('dy', '1.1em')
+						.attr('fill', '#666')
+						.style('font-size', '.8em')
+						.text('0');
+						
+					// update data 
+					svg.selectAll('rect')
 						.data(entries);
+						
+					svg.selectAll('text.datalabel')
+						.data(entries)
+						.text(function(d) { return ~~d.value + '%' });
 					
 					// transition bar
 					svg.selectAll('rect')
@@ -221,6 +235,21 @@ $(function() {
 									fieldColors(field) 
 								})
 							.attr('width', function(d) { return length(d.value) })
+							.duration(250);
+					
+					// transition label
+					svg.selectAll('text.datalabel')
+						.transition()
+							.attr('fill', function(d) { 
+								return length(d.value) > 30 ?  '#fff' : '#666' 
+							})
+							.attr('dx', function(d) { 
+								return length(d.value) > 30 ?  -3 : 3 
+							})
+							.attr('text-anchor', function(d) { 
+								return length(d.value) > 30 ?  'end' : 'start' 
+							})
+							.attr('x', function(d) { return length(d.value) + lw })
 							.duration(250);
 				});
 			
