@@ -1,7 +1,7 @@
 $(function() {
-	// var demographics = demographicsStub;
+	var demographics = demographicsStub;
 	
-	var fields = ['age', 'income', 'gender', 'education', 'family', 'ethnicity'];
+	var fields = ['age', 'income', 'gender', 'education', 'ethnicity', 'family'];
 	
 	function toId(name) {
 		return name.replace(/\W/g, '_')
@@ -27,11 +27,15 @@ $(function() {
 				var data = demographics.getPerTrackerDemographics(d);
 				return !data.network_id;
 			});
+		// toggle tabs
 		notNetwork.forEach(function(name) {
 			var id = toId(name);
 			$('label[for="nav' + id + '"]')
 				.toggle(toggle);
-		})
+		});
+		// select remaining tab, if any
+		$('#tracker-tabs label:visible')
+			.first().click();
 	});
 	
 	// set up nav functionality
@@ -63,11 +67,19 @@ $(function() {
 			// update report tabs
 			updateReports(data);
 		
-		});//.first().click();
+		})
+		// initial kick off
+		.first().click();
 
 	function updateReports(data) {
 		// update support count
 		$('span.support-count').html(data.support ? data.support.length : 0);
+		
+		function toTitle(field) {
+			return field.replace(/\w\S*/g, function(txt){
+				return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase();
+			});
+		}
 		
 		// create tables (first time)
 		$('table.data-table').each(function() {
@@ -75,12 +87,25 @@ $(function() {
 			if (!$('tbody tr', $this).length) {
 				fields.forEach(function(field) {
 					// slightly ugly title case conversion
-					var title = field.replace(/\w\S*/g, function(txt){
-						return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase();
-					});
+					var title = toTitle(field);
 					// add rows
 					$('tbody', $this).append(
 						'<tr class="' + field + '"><th>' + title + '</th><td class="guess"></td><td class="likelihood"></td><td class="likelihood-graph"></td></tr>'
+					);
+				});
+			}
+		});
+		
+		// create detail panes
+		$('div#details-table').each(function() {
+			var $this = $(this);
+			if (!$('div.details', $this).length) {
+				fields.forEach(function(field) {
+					// slightly ugly title case conversion
+					var title = toTitle(field);
+					// add rows
+					$this.append(
+						'<div class="details ' + field + '"><div class="likelihood-graph"></div><h3>' + title + '</h3></div>'
 					);
 				});
 			}
@@ -100,7 +125,6 @@ $(function() {
 			agg[field] = entries[0];
 			return agg;
 		}, {});
-			
 		
 		// update overview
 		d3.selectAll('#overview-table tbody tr')
@@ -137,76 +161,62 @@ $(function() {
 			});
 			
 		// update details
-		d3.selectAll('#details-table tbody tr')
-			.data(fields)
-			.each(function(d) {
-				var row = d3.select(this),
-					guess = guesses[d];
-				
-				// update guess
-				row.select('td.guess')
-					.text('Best guess: ' + guess.key);
+		fields.forEach(function(field) {
+			d3.selectAll('#details-table div.details.' + field)
+				.data([field])
+				.each(function(d) {
+					var row = d3.select(this),
+						guess = guesses[d];
+						
+					var entries = d3.entries(data[d]),
+						bw = 100,
+						lw = 120;
+						
+					var svg = row.select('div.likelihood-graph').selectAll('svg')
+						.data([1]);
+						
+					var entry = svg.enter().append('svg:svg')
+						.attr('height', 18 * entries.length)
+						.attr('width', bw + lw);
+						
+					entry.append('svg:line')
+						.attr('y1', 0)
+						.attr('y2', 18 * entries.length)
+						.attr('x1', lw)
+						.attr('x2', lw)
+						.style('stroke', '#999');
 					
-				var entries = d3.entries(data[d]),
-					bw = 100,
-					lw = 120,
-					maxh = d3.max(entries, function(d) { return length(d.value) });
+					var container = svg.selectAll('g.bar')
+						.data(entries);
+						
+					entry = container.enter().append('svg:g')
+						.attr('class', 'bar')
+						.attr('transform', function(d, i) { return 'translate(0,' + (18 * i) + ')'});
 					
-				row.select('th')
-					.style('padding-top', (maxh + 5) + 'px');
-				
-				row.select('td.guess')
-					.style('padding-top', (maxh + 5) + 'px');
+					entry.append('svg:rect')
+						.attr('x', lw)
+						.attr('y', 0)
+						.attr('fill', 'steelblue')
+						.attr('height', 15)
+						.attr('width', 0);
+						
+					entry.append('svg:text')
+						.attr('x', lw)
+						.attr('dx', -3)
+						.attr('dy', '1em')
+						.attr('text-anchor', 'end')
+						.text(function(d) { return d.key });
+						
+					var container = svg.selectAll('rect')
+						.data(entries);
 					
-				var svg = row.select('td.likelihood-graph').selectAll('svg')
-					.data([1]);
-					
-				var entry = svg.enter().append('svg:svg')
-					.attr('width', 18 * entries.length + lw - 30)
-					.attr('height', maxh + lw)
-				.append('svg:g')
-					.attr('transform', 'translate(0,' + -(bw-maxh) + ')');
-					
-				entry.append('svg:line')
-					.attr('x1', 70)
-					.attr('x2', 18 * entries.length + 72)
-					.attr('y1', bw + 12)
-					.attr('y2', bw + 12)
-					.style('stroke', '#999');
-				
-				var container = svg.selectAll('g.bar')
-					.data(entries);
-					
-				console.log(entries);
-					
-				entry = container.enter().append('svg:g')
-					.attr('class', 'bar')
-					.attr('transform', function(d, i) { return 'translate(' + (18 * i + 70) + ',' + (-(bw-maxh) + 12) + ')'});
-				
-				entry.append('svg:rect')
-					.attr('x', 5)
-					.attr('y', bw)
-					.attr('fill', 'steelblue')
-					.attr('width', 15)
-					.attr('height', 0);
-					
-				entry.append('svg:text')
-					.attr('y', bw + 7)
-					.attr('x', 15)
-					.attr('text-anchor', 'end')
-					.attr('transform', 'rotate(-60 15,' + (bw + 7) + ')')
-					.text(function(d) { return d.key });
-					
-				var container = svg.selectAll('rect')
-					.data(entries);
-				
-				// transition bar
-				svg.selectAll('rect')
-					.transition()
-						.attr('height', function(d) { return length(d.value) })
-						.attr('y', function(d) { return bw - length(d.value) })
-						.duration(250);
-			});
+					// transition bar
+					svg.selectAll('rect')
+						.transition()
+							.attr('width', function(d) { return length(d.value) })
+							.duration(250);
+				});
+		});
 	}
 
 		
