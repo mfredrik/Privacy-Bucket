@@ -73,7 +73,7 @@ $(function() {
 
 	function updateReports(data) {
 		// update support count
-		$('span.support-count').html(data.support ? data.support.length : 0);
+		$('span.support-count').html(data.support && data.support.length || 0);
 		
 		function toTitle(field) {
 			return field.replace(/\w\S*/g, function(txt){
