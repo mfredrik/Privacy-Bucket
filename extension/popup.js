@@ -73,7 +73,6 @@ $(function() {
 
 	function updateReports(data) {
 		// update support count
-		console.log(JSON.stringify(data));
 		$('span.support-count').html(data.support ? data.support.length : 0);
 		
 		function toTitle(field) {
@@ -136,7 +135,7 @@ $(function() {
 				
 				// update guess
 				row.select('td.guess')
-					.text(guess.key);
+					.text(toTitle(guess.key));
 					
 				// update likelihood
 				var visCell = row.select('td.likelihood')
@@ -206,7 +205,7 @@ $(function() {
 						.attr('dx', -3)
 						.attr('dy', '1em')
 						.attr('text-anchor', 'end')
-						.text(function(d) { return d.key });
+						.text(function(d) { return toTitle(d.key) });
 						
 					var container = svg.selectAll('rect')
 						.data(entries);
@@ -214,6 +213,7 @@ $(function() {
 					// transition bar
 					svg.selectAll('rect')
 						.transition()
+							.attr('fill', function(d) { return d.key == guess.key ? 'red' : 'steelblue' })
 							.attr('width', function(d) { return length(d.value) })
 							.duration(250);
 				});
