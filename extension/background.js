@@ -41,7 +41,7 @@ function updateDemographicServer(userid, req) {
         if(xhr.readyState == 4) {
             if(xhr.status == 200) {
                 var demos = xhr.responseText;
-                localStorage["demo:" + req.hostpage] = demos;                
+                localStorage["demo:" + req.hostpage] = JSON.stringify(normalize(JSON.parse(demos)));                
                 
                 // This must be called from here, as the function expects
                 // demographics for all host pages
