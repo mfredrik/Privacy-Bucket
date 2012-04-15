@@ -247,7 +247,7 @@ function getTrackerFromLocalStore(tracker){
 	}
 	if(addTotals){
 		if(tracker == 'All'){
-			var result = JSON.parse(localStorage["guess:all"]);
+			var result = JSON.parse(localStorage["guess:All"]);
 			result.support = allUrls;
 			result.obscount = allUrls.length;
 			//var result = processURLs(allUrls);	
