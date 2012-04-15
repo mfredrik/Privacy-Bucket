@@ -1,7 +1,8 @@
 $(function() {
 	// var demographics = demographicsStub;
 	
-	var fields = ['age', 'income', 'gender', 'education', 'ethnicity', 'family'];
+	var fields = ['age', 'income', 'gender', 'education', 'ethnicity', 'family'],
+		fieldColors = d3.scale.category10();
 	
 	function toId(name) {
 		return name.replace(/\W/g, '_')
@@ -25,7 +26,7 @@ $(function() {
 		var toggle = !$(this).prop('checked'),
 			notNetwork = trackers.filter(function(d) {
 				var data = demographics.getPerTrackerDemographics(d);
-				return !data.network_id;
+				return !data || !data.network_id;
 			});
 		// toggle tabs
 		notNetwork.forEach(function(name) {
@@ -149,7 +150,7 @@ $(function() {
 					.attr('width', 100)
 				.append('svg:rect')
 					.attr('x', 5)
-					.attr('fill', 'steelblue')
+					.attr('fill', fieldColors(d))
 					.attr('height', 15)
 					.attr('width', 0);
 				
@@ -196,7 +197,7 @@ $(function() {
 					entry.append('svg:rect')
 						.attr('x', lw)
 						.attr('y', 0)
-						.attr('fill', 'steelblue')
+						.attr('fill', fieldColors(field))
 						.attr('height', 15)
 						.attr('width', 0);
 						
@@ -213,7 +214,11 @@ $(function() {
 					// transition bar
 					svg.selectAll('rect')
 						.transition()
-							.attr('fill', function(d) { return d.key == guess.key ? 'red' : 'steelblue' })
+							.attr('fill', function(d) { 
+								return d.key == guess.key ? 
+									d3.rgb(fieldColors(field)).brighter() : 
+									fieldColors(field) 
+								})
 							.attr('width', function(d) { return length(d.value) })
 							.duration(250);
 				});
