@@ -141,3 +141,8 @@ span.support-count {
 	margin: 0;
 	font-size: .85em;
 }
+#observation-table div.details-container {
+	float: left;
+	width: 230px;
+	overflow: hidden;
+}

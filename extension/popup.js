@@ -66,18 +66,16 @@ $(function() {
 				$('#tracker-image').hide();
 			}
 			// update report tabs
-			updateReports(data);
+			updateReports(data, key);
 		
 		})
 		// initial kick off
 		.first().click();
 
-	function updateReports(data) {
+	function updateReports(data, domain) {
 		// update support count
-		if(!data.obscount)
-			$('span.support-count').html(data.support ? data.support.length : 0);
-		else			
-			$('span.support-count').html(data.obscount)
+		var supportCount = data.obscount ? data.obscount : data.support && data.support.length || 0;
+		$('span.support-count').html(supportCount);
 		
 		function toTitle(field) {
 			return field.replace(/\w\S*/g, function(txt){
@@ -225,6 +223,34 @@ $(function() {
 							.attr('width', function(d) { return length(d.value) })
 							.duration(250);
 				});
+			
+			// update observations tab
+			if (supportCount && data.support) {
+				$('#tabs-observations div.description').html(
+					"You were observed on " + supportCount + " sites by " + domain
+				);
+				var midPoint = ~~(data.support.length/2)+1,
+					support = { 
+						left: data.support.slice(0, midPoint),
+						right: data.support.slice(midPoint)
+					};
+				console.log('doing it', midPoint);
+				['left','right'].forEach(function(side) {
+					$('#tabs-observations div.details-container.' + side)
+						.empty();
+					support[side].forEach(function(observation) {
+						$('#tabs-observations div.details-container.' + side)
+							.append('<p>' + 
+								(observation.domain ? observation.domain + ' (' + observation.count +')' : observation) 
+								+ '</p>'
+							);
+					})
+				})
+			} else {
+				$('#tabs-observations div.description').html(
+					"No observations found for domain " + domain
+				)
+			}
 		});
 	}
 
