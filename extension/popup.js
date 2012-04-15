@@ -258,12 +258,13 @@ $(function() {
 			// update observations tab
 			if (supportCount && data.support) {
 				$('#tabs-observations div.description').html(
-					"You were observed on " + supportCount + " sites by " + domain
+					"You were observed " + supportCount + " times " + (domain == 'All' ? 'on all sites' : 'by ' + domain)
 				);
-				var midPoint = ~~(data.support.length/2)+1,
+                var support = domain == 'All' ? $.unique(data.support) : data.support;
+				var midPoint = ~~(support.length/2)+1,
 					support = { 
-						left: data.support.slice(0, midPoint),
-						right: data.support.slice(midPoint)
+						left: support.slice(0, midPoint),
+						right: support.slice(midPoint)
 					};
 				['left','right'].forEach(function(side) {
 					$('#tabs-observations div.details-container.' + side)
