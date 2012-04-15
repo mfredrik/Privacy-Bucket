@@ -126,18 +126,19 @@ function parseURL(url) {
 function getNetworkFromDomain(domain) { 
     for(var el in ad_networks) {
         var a = ad_networks[el];
-        if(a.domain == domain)
+        if(a.domain == domain){
+            //alert('matched ' + domain);
             return a.name;
+        }
     }
-    
+    //console.log('mismatched' + domain);
     return domain;
 }
 
 // this is run once when the extension is installed.
 // scans the user's history, and establishes host page/tracker
 // links from the fourthparty data.
-function seedDbFromHistory(maxResults) {
-    
+function seedDbFromHistory(maxResults) {    
     if(localStorage['seeded'] != undefined) return;
     
     // i wonder if there is a way to specify an unlimited number of results...

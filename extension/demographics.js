@@ -188,7 +188,7 @@ function processTrackersFromLocalStore(){
 			var network_id = domainToIdMap[trackerUrl];
 			if(network_id) {				
 				tracker2Demographics[trackerUrl].network_id = network_id;
-				//console.log("adding id " + tracker2Demographics[trackerUrl].network_id + " for " + trackerUrl);
+				console.log("adding id " + tracker2Demographics[trackerUrl].network_id + " for " + trackerUrl);
 			}else{
 				//console.log("missing " + trackerUrl  + " in network_id map");
 			}
