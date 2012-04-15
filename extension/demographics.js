@@ -83,8 +83,8 @@ var init = {
 		 		'Grad School' : 4
 	 		},
 	    	family : {
-	    		'No Kids' : 73,
-	    		'Has Kids' : 27
+	    		'No kids' : 73,
+	    		'Has kids' : 27
 	    	},
 	    	ethnicity : {
 		    	'Caucasian' : 63,
