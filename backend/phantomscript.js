@@ -44,14 +44,14 @@ page.open('http://www.quantcast.com/' + host + '/demographics',
                 var body = document.body;
                 var list = body.querySelectorAll('div#panel-GENDER * table[class=demographics-composition]  * td[class~=index-digit]');
 				console.log(list)
-                return {'male':parseInt(list[0].innerText), 'female':parseInt(list[1].innerText)};
+                return {'Male':parseInt(list[0].innerText), 'Female':parseInt(list[1].innerText)};
             }));
 
             // Scrape the children results
             ethresults['family'] = (page.evaluate(function () {
                 var body = document.body;
                 var list = body.querySelectorAll('div#panel-CHILDREN * table[class=demographics-composition]  * td[class~=index-digit]');
-                return {'no kids':parseInt(list[0].innerText), 'has kids':parseInt(list[1].innerText)};
+                return {'No kids':parseInt(list[0].innerText), 'Has kids':parseInt(list[1].innerText)};
             }));			
 			console.log(JSON.stringify(ethresults))
 

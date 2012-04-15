@@ -32,7 +32,7 @@ if($found == 0) {
       $dom = mysql_real_escape_string($dom);
       $data = mysql_real_escape_string($data);
       
-      $insertquery = "INSERT INTO demo.cache VALUES ('$dom','$data');";
+      $insertquery = "INSERT ignore INTO demo.cache(domain, demos) VALUES ('$dom','$data');";
       mysql_query($insertquery);
       
       $found = 1;
