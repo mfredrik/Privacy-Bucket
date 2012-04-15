@@ -70,24 +70,24 @@ var init = {
 				'$150k+' : 34
 	    	},
 	    	gender : {
-	    		'Male' : 54,
-	    		'Female' : 46
+	    		'male' : 54,
+	    		'female' : 46
 	    	},
 	    	education : {
-		    	'No College' : 67,
-		 		'College' : 10,
-		 		'Grad School' : 4
+		    	'no college' : 67,
+		 		'college' : 10,
+		 		'grad school' : 4
 	 		},
 	    	family : {
-	    		'No kids' : 73,
-	    		'Has kids' : 27
+	    		'no kids' : 73,
+	    		'has kids' : 27
 	    	},
 	    	ethnicity : {
-		    	'Caucasian' : 63,
-				'African American':	 18,
-				'Asian':	 8,
-				'Hispanic':	 10,
-				'Other': 1
+		    	'caucasian' : 63,
+				'african american':	 18,
+				'asian':	 8,
+				'hispanic':	 10,
+				'other': 1
 	    	}
 		};
 
