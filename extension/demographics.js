@@ -38,6 +38,8 @@ function getAdvertisers(){
 
 function getDemographicsFromLocalStore(url){
 	if(DEBUG) console.log('Processing ' + url);
+	
+	
 	for(var domain in localStorage){		
 		if(domain.substr(0, 5) == 'demo:'){
 			var siteURL = domain.substr(5, domain.length-5);
@@ -187,7 +189,9 @@ function processTrackersFromLocalStore(){
 			if(trackerUrl == "All") {
 				var allcnt = localStorage["count:All"];
 				if(allcnt)
-					tracker2Demographics[trackerUrl].obscount = allcnt;			
+					tracker2Demographics[trackerUrl].obscount = allcnt;
+				tracker2Demographics[trackerUrl].network_id = -1;
+				//tracker2Demographics[trackerUrl].support = [];
 			}
 			if (DEBUG) console.log('Setting ' + trackerUrl + ' = ' + JSON.stringify(json));
 			if(tracker2Demographics[trackerUrl] && tracker2Demographics[trackerUrl].support){
@@ -273,6 +277,7 @@ function getTrackerFromLocalStore(tracker){
 			var result = JSON.parse(localStorage["guess:All"]);
 			result.support = allUrls;
 			var allcnt = localStorage["count:All"];
+			result.network_id = -1;
 			if(allcnt)
 				result.obscount = allcnt;
 			else
@@ -286,6 +291,8 @@ function getTrackerFromLocalStore(tracker){
 			}else{
 				if(DEBUG) console.log('All' + ' : no data');
 			}
+			
+			return result;
 		}
 	}
 
