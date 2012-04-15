@@ -74,7 +74,7 @@ function doProd(A,B) {
                 continue;
             }
             
-            var product = A[idx][idx2]/100 * B[idx][idx2]/100;
+            var product = A[idx][idx2] * B[idx][idx2];
             C[idx][idx2] = product;
             sum += product;
         }
@@ -84,7 +84,7 @@ function doProd(A,B) {
                 C[idx][idx2] = C[idx][idx2]*100;
             }
         }
-    }
+    }    
     
     return C;
 }

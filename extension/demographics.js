@@ -74,8 +74,8 @@ var init = {
 				'$150k+' : 34
 	    	},
 	    	gender : {
-	    		'male' : 54,
-	    		'female' : 46
+	    		'Male' : 54,
+	    		'Female' : 46
 	    	},
 	    	education : {
 		    	'No College' : 67,
@@ -83,8 +83,8 @@ var init = {
 		 		'Grad School' : 4
 	 		},
 	    	family : {
-	    		'no kids' : 73,
-	    		'has kids' : 27
+	    		'No Kids' : 73,
+	    		'Has Kids' : 27
 	    	},
 	    	ethnicity : {
 		    	'Caucasian' : 63,
