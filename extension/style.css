@@ -123,14 +123,20 @@ table.data-table thead th {
 	margin-bottom: 1px;
 }
 
-#details-table td.likelihood {
-	display: none;
-}
-
-#details-table td.guess {
-	width: auto;
-	padding-right: 0;
-}
 span.support-count {
 	font-weight: bold;
+}
+
+#details-table div.details-container {
+	float: left;
+	width: 300px;
+}
+#details-table div.details {
+	padding-top: 1em;
+}
+#details-table div.details div.likelihood-graph{
+	float: right;
+}
+#details-table div.details h3 {
+	margin: 0;
 }
