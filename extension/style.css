@@ -4,7 +4,7 @@ td, th { vertical-align: top; }
 
 body {
 	margin: 0;
-    min-width: 840px;
+    min-width: 800px;
     height: 400px;
     overflow: hidden;
     font-family : "Calibri", "Arial", serif;
@@ -129,7 +129,7 @@ span.support-count {
 
 #details-table div.details-container {
 	float: left;
-	width: 300px;
+	width: 290px;
 }
 #details-table div.details {
 	padding-top: 1em;
@@ -139,4 +139,5 @@ span.support-count {
 }
 #details-table div.details h3 {
 	margin: 0;
+	font-size: .85em;
 }

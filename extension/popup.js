@@ -1,5 +1,5 @@
 $(function() {
-	//var demographics = demographicsStub;
+	// var demographics = demographicsStub;
 	
 	var fields = ['age', 'income', 'gender', 'education', 'ethnicity', 'family'];
 	
