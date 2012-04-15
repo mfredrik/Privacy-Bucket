@@ -161,7 +161,7 @@ var allUrls = new Array();
 var domainToIdMap = getDomainToId();
 function processTrackersFromLocalStore(){
 	for(var domain in localStorage){
-		if(domain.substr(0,6) == 'guess:'){
+		if(domain.substr(0,6) == 'guess:') {
 			var urls = new Array();
 			var trackerUrl = domain.substr(6, domain.length-6);
 			var json = JSON.parse(localStorage[domain]);
@@ -173,7 +173,16 @@ function processTrackersFromLocalStore(){
 				for(i = 0; i < jsont.length ; i++){
 					obscount += jsont[i].count;					
 				}
-				tracker2Demographics[trackerUrl].obscount = obscount;				
+				tracker2Demographics[trackerUrl].obscount = obscount;
+				
+				var network_id = domainToIdMap[trackerUrl];
+				if(network_id) {				
+					tracker2Demographics[trackerUrl].network_id = network_id;
+					//console.log("adding id " + tracker2Demographics[trackerUrl].network_id + " for " + trackerUrl);
+				}else{
+					//console.log("missing " + trackerUrl  + " in network_id map");
+				}
+
 			}
 			if(trackerUrl == "All") {
 				var allcnt = localStorage["count:All"];
