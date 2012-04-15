@@ -89,6 +89,20 @@ function doProd(A,B) {
     return C;
 }
 
+// gets a tracker network name from a domain name
+// returns the input domain name if it is not found in our list
+function getNetworkFromDomain(domain) { 
+    for(var el in ad_networks) {
+        var a = ad_networks[el];
+        if(a.domain == domain){
+            //alert('matched ' + domain);
+            return a.name;
+        }
+    }
+    //console.log('mismatched' + domain);
+    return domain;
+}
+
 function updateTrackerGuesses(req) {
    
     var hp_demos = localStorage["demo:" + req.hostpage];
@@ -108,7 +122,7 @@ function updateTrackerGuesses(req) {
     }
     
     for(var tp in req.thirdparties) {
-        var curtp = req.thirdparties[tp];
+        var curtp = getNetworkFromDomain(req.thirdparties[tp]);
         
         
         var curGuessBlob = localStorage["guess:" + curtp];
@@ -135,20 +149,6 @@ function parseURL(url) {
         protocol: a.protocol.replace(':',''),
         hostdomain: dom
     };
-}
-
-// gets a tracker network name from a domain name
-// returns the input domain name if it is not found in our list
-function getNetworkFromDomain(domain) { 
-    for(var el in ad_networks) {
-        var a = ad_networks[el];
-        if(a.domain == domain){
-            //alert('matched ' + domain);
-            return a.name;
-        }
-    }
-    //console.log('mismatched' + domain);
-    return domain;
 }
 
 // this is run once when the extension is installed.
