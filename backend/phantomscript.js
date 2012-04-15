@@ -46,7 +46,7 @@ page.open('http://www.quantcast.com/' + host + '/demographics',
             ethresults['gender'] = (page.evaluate(function () {
                 var body = document.body;
                 var list = body.querySelectorAll('div#panel-GENDER * table[class=demographics-composition]  * td[class~=index-digit]');
-				//console.log(list)
+				console.log(list)
                 return {'Male':parseInt(list[0].innerText), 'Female':parseInt(list[1].innerText)};
             }));
 
