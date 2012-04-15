@@ -81,14 +81,14 @@ function updateTrackerGuesses(req) {
     hp_demos = normalize(JSON.parse(hp_demos));
     hp_demos.domain = req.hostpage;
     
-    var allGuessBlob = localStorage["guess:all"];
+    var allGuessBlob = localStorage["guess:All"];
     if(!allGuessBlob) {
-        localStorage["guess:all"] = JSON.stringify(hp_demos);
+        localStorage["guess:All"] = JSON.stringify(hp_demos);
     } else {
         var curAll = normalize(JSON.parse(allGuessBlob));
         var prod = doProd(curAll,hp_demos);
-        prod["domain"] = "all";
-        localStorage["guess:all"] = JSON.stringify(prod);
+        prod["domain"] = "All";
+        localStorage["guess:All"] = JSON.stringify(prod);
     }
     
     for(var tp in req.thirdparties) {

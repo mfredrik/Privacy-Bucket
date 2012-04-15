@@ -29,7 +29,9 @@ function getAdvertisers(){
 	//console.log("advertisers " + result);
 	if(addTotals) result.unshift('All');
 	for(var o in tracker2Demographics) {
-		console.log('support: ' + JSON.stringify(tracker2Demographics[o].support));
+		if(!tracker2Demographics[o].support){
+			console.log('support: ' + JSON.stringify(tracker2Demographics[o].support) + ' for ' + o);
+		}
 	}
 	return result;	
 }
@@ -152,7 +154,7 @@ function product(A, B){
 		C[index] *= 100;
 	}
 	return C;
-}	
+}
 
 var tracker2Demographics = {};
 var allUrls = new Array();
@@ -167,7 +169,7 @@ function processTrackersFromLocalStore(){
 			if(localStorage["tracker:" + trackerUrl] != undefined) {
 				tracker2Demographics[trackerUrl].support = JSON.parse(localStorage["tracker:" + trackerUrl]);
 			}
-			console.log('Setting ' + trackerUrl + ' = ' + JSON.stringify(json));
+			if (DEBUG) console.log('Setting ' + trackerUrl + ' = ' + JSON.stringify(json));
 			if(tracker2Demographics[trackerUrl] && tracker2Demographics[trackerUrl].support){
 				var support = tracker2Demographics[trackerUrl].support;				
 				tracker2Demographics[trackerUrl].support = support;
@@ -209,7 +211,7 @@ function getTrackerFromLocalStore(tracker){
 		console.log(JSON.stringify(tracker2Demographics[tracker]));
 		return tracker2Demographics[tracker];
 	}
-	console.log('Not in cache ' + tracker);
+	console.log('Computing ' + tracker);
 	for(var domain in localStorage){
 		//alert('domain: ' + domain);
 		if(domain.substr(0,8) == 'tracker:'){
@@ -245,19 +247,24 @@ function getTrackerFromLocalStore(tracker){
 	}
 	if(addTotals){
 		if(tracker == 'All'){
-			var result = JSON.parse(localStorage["guess:all"]);
-			result.support = allUrls;
-			result.obscount = allUrls.length;
-			//var result = processURLs(allUrls);	
-			if(result){
-				if(DEBUG) console.log('All' + ' : ' + JSON.stringify(result));				
-				//result.support = -1;	// allUrls.length;
-				result.network_id = -1;
-				tracker2Demographics['All'] = result;
-			}else{
-				if(DEBUG) console.log('All' + ' : no data');
+			var allGuess  = localStorage["guess:All"];
+			try{
+				var result = JSON.parse(allGuess);
+				result.support = allUrls;
+				result.obscount = allUrls.length;
+				//var result = processURLs(allUrls);	
+				if(result){
+					if(DEBUG) console.log('All' + ' : ' + JSON.stringify(result));				
+					//result.support = -1;	// allUrls.length;
+					result.network_id = -1;
+					tracker2Demographics['All'] = result;
+				}else{
+					if(DEBUG) console.log('All' + ' : no data');
+				}
+				return result;
+			}catch(e){
+				console.log("Exception parsing: " + e + ' for ' + allGuess);
 			}
-			return result;
 		}
 	}
 

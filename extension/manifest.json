@@ -17,7 +17,7 @@
   ],
 
   "browser_action": {
-    "default_icon": "images/icon.jpg", // optional
+    "default_icon": "images/bucket.png", // optional
     "default_title": "Privacy Bucket",      // optional; shown in tooltip
     "default_popup": "popup.html"        // optional
   }

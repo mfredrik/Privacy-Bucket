@@ -22,8 +22,8 @@ $(function() {
 	});
 	
 	// toggle only network id
-	$('#network-toggle').click(function() {
-		var toggle = !$(this).prop('checked'),
+    var filterNetworks = function() {
+		var toggle = !$('#network-toggle').prop('checked'),
 			notNetwork = trackers.filter(function(d) {
 				var data = demographics.getPerTrackerDemographics(d);
 				return !data || !data.network_id;
@@ -37,7 +37,10 @@ $(function() {
 		// select remaining tab, if any
 		$('#tracker-tabs label:visible')
 			.first().click();
-	});
+	}
+	$('#network-toggle').click(filterNetworks);
+    // kick off
+    filterNetworks();
 	
 	// set up nav functionality
 	$('#tracker-tabs').buttonset();
@@ -54,7 +57,7 @@ $(function() {
 			if (networkId) {
 				// add more info link
 				$('#tracker-title')
-					.append('<span class="moreinfo">(<a href="' + networkUrl + '" target="_blank">More Info</a>)</span>');
+					.append('<span class="moreinfo">(<a href="' + networkUrl + '" target="_blank">PrivacyChoice summary</a>)</span>');
 				// image
 				$('#tracker-image').show();
 				$('#tracker-image a')
@@ -66,18 +69,16 @@ $(function() {
 				$('#tracker-image').hide();
 			}
 			// update report tabs
-			updateReports(data);
+			updateReports(data, key);
 		
 		})
 		// initial kick off
 		.first().click();
 
-	function updateReports(data) {
+	function updateReports(data, domain) {
 		// update support count
-		if(!data.obscount)
-			$('span.support-count').html(data.support ? data.support.length : 0);
-		else			
-			$('span.support-count').html(data.obscount)
+		var supportCount = data.obscount ? data.obscount : data.support && data.support.length || 0;
+		$('span.support-count').html(supportCount);
 		
 		function toTitle(field) {
 			return field.replace(/\w\S*/g, function(txt){
@@ -211,8 +212,22 @@ $(function() {
 						.attr('text-anchor', 'end')
 						.text(function(d) { return toTitle(d.key) });
 						
-					var container = svg.selectAll('rect')
+					entry.append('svg:text')
+						.attr('class', 'datalabel')
+						.attr('x', lw)
+						.attr('dx', 3)
+						.attr('dy', '1.1em')
+						.attr('fill', '#666')
+						.style('font-size', '.8em')
+						.text('0');
+						
+					// update data 
+					svg.selectAll('rect')
 						.data(entries);
+						
+					svg.selectAll('text.datalabel')
+						.data(entries)
+						.text(function(d) { return ~~d.value + '%' });
 					
 					// transition bar
 					svg.selectAll('rect')
@@ -224,7 +239,50 @@ $(function() {
 								})
 							.attr('width', function(d) { return length(d.value) })
 							.duration(250);
+					
+					// transition label
+					svg.selectAll('text.datalabel')
+						.transition()
+							.attr('fill', function(d) { 
+								return length(d.value) > 30 ?  '#fff' : '#666' 
+							})
+							.attr('dx', function(d) { 
+								return length(d.value) > 30 ?  -3 : 3 
+							})
+							.attr('text-anchor', function(d) { 
+								return length(d.value) > 30 ?  'end' : 'start' 
+							})
+							.attr('x', function(d) { return length(d.value) + lw })
+							.duration(250);
 				});
+			
+			// update observations tab
+			if (supportCount && data.support) {
+				$('#tabs-observations div.description').html(
+					"You were observed on " + supportCount + " sites by " + domain
+				);
+				var midPoint = ~~(data.support.length/2)+1,
+					support = { 
+						left: data.support.slice(0, midPoint),
+						right: data.support.slice(midPoint)
+					};
+				console.log('doing it', midPoint);
+				['left','right'].forEach(function(side) {
+					$('#tabs-observations div.details-container.' + side)
+						.empty();
+					support[side].forEach(function(observation) {
+						$('#tabs-observations div.details-container.' + side)
+							.append('<p>' + 
+								(observation.domain ? observation.domain + ' (' + observation.count +')' : observation) 
+								+ '</p>'
+							);
+					})
+				})
+			} else {
+				$('#tabs-observations div.description').html(
+					"No observations found for domain " + domain
+				)
+			}
 		});
 	}
 
