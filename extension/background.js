@@ -260,4 +260,4 @@ chrome.extension.onRequest.addListener(function(req, sender, sendresp) {
     }
 });
 
-seedDbFromHistory(10);
+seedDbFromHistory(1);
