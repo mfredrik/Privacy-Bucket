@@ -277,7 +277,7 @@ var demographics = {
 	processTrackersFromLocalStore: processTrackersFromLocalStore
 };
 
-var demographics = {
+var demographicsStub = {
 	getPerTrackerDemographics: getPerTrackerDemographicsStub,
 	getAdvertisers: getAdvertisersStub,
 	processTrackersFromLocalStore: function() {}
