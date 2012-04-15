@@ -205,11 +205,11 @@ $(function() {
 						.attr('width', 0);
 						
 					entry.append('svg:text')
+						.attr('class', 'catlabel')
 						.attr('x', lw)
 						.attr('dx', -3)
 						.attr('dy', '1em')
-						.attr('text-anchor', 'end')
-						.text(function(d) { return toTitle(d.key) });
+						.attr('text-anchor', 'end');
 						
 					entry.append('svg:text')
 						.attr('class', 'datalabel')
@@ -227,6 +227,10 @@ $(function() {
 					svg.selectAll('text.datalabel')
 						.data(entries)
 						.text(function(d) { return ~~d.value + '%' });
+                        
+                    svg.selectAll('text.catlabel')
+						.data(entries)
+						.text(function(d) { return toTitle(d.key) });
 					
 					// transition bar
 					svg.selectAll('rect')
