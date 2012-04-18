@@ -30,13 +30,13 @@ function updateDemographicServer(userid, req) {
 
     var xhr = new XMLHttpRequest();
 
+    // if we've already cached these demographics, don't worry about it
+    if(localStorage["demo:" + req.hostpage] != undefined) {
+        updateTrackerGuesses(req);
+        return;
+    }
+    
     xhr.onreadystatechange = function() {        
-        
-        // if we've already cached these demographics, don't worry about it
-        if(localStorage["demo:" + req.hostpage] != undefined) {
-            updateTrackerGuesses(req);
-            return;
-        }
         
         if(xhr.readyState == 4) {
             if(xhr.status == 200) {
@@ -104,6 +104,8 @@ function getNetworkFromDomain(domain) {
 }
 
 function updateTrackerGuesses(req) {
+    
+    //console.log("updating guess for: " + req.hostpage);
    
     var hp_demos = undefined;
     while(hp_demos == undefined)
@@ -168,7 +170,8 @@ function seedDbFromHistory(maxResults) {
                 var hostdomain = parseURL(url).hostdomain;                
                 var cur_trackers = trackers[hostdomain];
                 
-                cur_trackers = getUnique(cur_trackers);
+                if(cur_trackers != undefined)
+                    cur_trackers = getUnique(cur_trackers);
                 
                 for(var tracker in cur_trackers) {                    
                     insertIntoDb({
@@ -241,10 +244,15 @@ chrome.tabs.onCreated.addListener(
     }
 );
 
+var lastPage = undefined;
+
 chrome.tabs.onUpdated.addListener(
     // activates when a tab is updated (and finished loading) to inject the content script
-    function(tabId, changeInfo, tab) {        
-        if(changeInfo.hasOwnProperty("status") && changeInfo.status == "loading") return;    
+    function(tabId, changeInfo, tab) {
+        if((changeInfo.hasOwnProperty("status") && changeInfo.status != "complete") || tab.url == lastPage) return;
+        
+        lastPage = tab.url;
+        setTimeout(function () {lastPage = undefined;}, 10000);
         
         tabCreatedListener(tab);
     }
@@ -254,10 +262,11 @@ chrome.tabs.onUpdated.addListener(
 chrome.extension.onRequest.addListener(function(req, sender, sendresp) {
     
     if(req.thirdparties){
+        //console.log("processing listen from: " + req.hostpage);
         updateDemographicServer(0,req);
         //updateTrackerGuesses(req);
         insertIntoDb(req);
     }
 });
 
-seedDbFromHistory(1);
+seedDbFromHistory(10);
